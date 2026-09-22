@@ -1,0 +1,18 @@
+name: Recordatorios push
+
+# Dispara la función /api/cron cada 15 min para enviar las notificaciones
+# de recordatorios vencidos. Requiere el secreto de repositorio CRON_SECRET
+# (mismo valor que la variable de entorno CRON_SECRET en Vercel).
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enviar recordatorios vencidos
+        run: |
+          curl -fsS -m 60 -X POST "https://caudal-omega.vercel.app/api/cron" \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}"

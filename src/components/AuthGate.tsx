@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import type { User } from 'firebase/auth'
 import { firebaseEnabled } from '../lib/firebase'
 import { watchAuth, signInGoogle, signOutUser } from '../store/sync'
+import { registerPush } from '../lib/fcm'
 
 interface AuthState {
   user: User | null
@@ -23,6 +24,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
     const unsub = watchAuth((u) => {
       setUser(u)
       setReady(true)
+      if (u) registerPush(u.uid) // registra push si ya hay permiso concedido
     })
     return unsub
   }, [])

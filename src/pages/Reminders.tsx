@@ -7,6 +7,8 @@ import { IconBubble, Sheet, Field, inputCls, Btn, Segmented, EmptyState, TopBar 
 import { money, todayISO } from '../lib/format'
 import { nextOccurrence, dueOccurrence, whenLabel, freqDescription, FREQ_LABEL } from '../lib/recurrence'
 import { canNotify, notifPermission, ensurePermission } from '../lib/notify'
+import { registerPush } from '../lib/fcm'
+import { useAuth } from '../components/AuthGate'
 import type { Reminder, ReminderKind, ReminderFreq } from '../lib/types'
 
 const KIND_META: Record<ReminderKind, { label: string; color: string; icon: string }> = {
@@ -20,6 +22,7 @@ export function Reminders() {
   const s = useStore()
   const nav = useNavigate()
   const hide = s.settings.hideBalances
+  const { user } = useAuth()
   const [edit, setEdit] = useState<Reminder | 'new' | null>(null)
   const [perm, setPerm] = useState(notifPermission())
 
@@ -34,7 +37,11 @@ export function Reminders() {
       })
   }, [s.reminders])
 
-  const askPermission = async () => setPerm(await ensurePermission())
+  const askPermission = async () => {
+    const p = await ensurePermission()
+    setPerm(p)
+    if (p === 'granted' && user) registerPush(user.uid)
+  }
 
   return (
     <div>

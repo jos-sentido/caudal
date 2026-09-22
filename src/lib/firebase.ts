@@ -27,3 +27,4 @@ if (firebaseEnabled) {
 
 export const auth = _auth
 export const db = _db
+export const fbApp = app

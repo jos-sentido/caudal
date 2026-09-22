@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Wallet2, CreditCard, Bookmark, Wallet, Repeat, PieChart, Eye, EyeOff,
-  Download, Upload, RotateCcw, Trash2, ChevronRight, Cloud, UserCircle2, LogOut, CloudOff,
+  Download, Upload, RotateCcw, Trash2, ChevronRight, Cloud, UserCircle2, LogOut, CloudOff, BellRing,
 } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { useAuth } from '../components/AuthGate'
@@ -70,6 +70,7 @@ export function More() {
         <Item to="/categorias" icon={<Bookmark size={20} />} label="Categorías" />
         <Item to="/presupuestos" icon={<Wallet size={20} />} label="Presupuestos" />
         <Item to="/recurrentes" icon={<Repeat size={20} />} label="Transacciones recurrentes" />
+        <Item to="/recordatorios" icon={<BellRing size={20} />} label="Recordatorios y alertas" />
       </Group>
 
       <Group title="Análisis">

@@ -1,6 +1,26 @@
 export type TxType = 'expense' | 'income' | 'transfer'
 export type CategoryKind = 'expense' | 'income'
 export type RecurrenceFreq = 'weekly' | 'monthly' | 'yearly'
+export type ReminderFreq = 'once' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'everyN'
+export type ReminderKind = 'expense' | 'income' | 'card' | 'other'
+
+export interface Reminder {
+  id: string
+  title: string
+  note?: string
+  amount?: number | null
+  kind: ReminderKind
+  categoryId?: string | null
+  accountId?: string | null
+  cardId?: string | null
+  date: string // yyyy-mm-dd de la primera ocurrencia
+  time: string // HH:mm
+  freq: ReminderFreq
+  interval?: number // días, para 'everyN'
+  notify: boolean
+  active: boolean
+  lastFired?: string | null // ISO datetime de la última ocurrencia notificada
+}
 
 export interface Account {
   id: string
@@ -82,5 +102,6 @@ export interface AppData {
   transactions: Transaction[]
   recurrings: Recurring[]
   budgets: Budget[]
+  reminders: Reminder[]
   settings: Settings
 }

@@ -1,9 +1,42 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { LayoutGrid, ListChecks, Wallet2, MoreHorizontal, Plus, X, TrendingUp, TrendingDown, ArrowLeftRight, CreditCard } from 'lucide-react'
 import clsx from 'clsx'
 import { TransactionModal, type TxDraft } from './TransactionModal'
-import type { TxType } from '../lib/types'
+import { useStore } from '../store/useStore'
+import { dueOccurrence } from '../lib/recurrence'
+import { fireNotification } from '../lib/notify'
+import { money } from '../lib/format'
+import type { TxType, Reminder } from '../lib/types'
+
+function reminderBody(r: Reminder): string {
+  if (r.note) return r.note
+  if (r.amount) return `${money(r.amount)} · toca para registrarlo`
+  return 'Recordatorio de Caudal'
+}
+
+/** Revisa recordatorios vencidos y dispara notificaciones mientras la app está activa. */
+function useReminderScheduler() {
+  useEffect(() => {
+    const check = () => {
+      const { reminders, markReminderFired } = useStore.getState()
+      const now = new Date()
+      for (const r of reminders) {
+        if (!r.active || !r.notify) continue
+        const due = dueOccurrence(r, now)
+        if (due && (!r.lastFired || new Date(r.lastFired) < due)) {
+          fireNotification(r.title, reminderBody(r), r.id)
+          markReminderFired(r.id, due.toISOString())
+        }
+      }
+    }
+    check()
+    const iv = window.setInterval(check, 60_000)
+    const onVis = () => document.visibilityState === 'visible' && check()
+    document.addEventListener('visibilitychange', onVis)
+    return () => { window.clearInterval(iv); document.removeEventListener('visibilitychange', onVis) }
+  }, [])
+}
 
 interface TxModalCtx {
   openTx: (draft?: TxDraft) => void
@@ -15,6 +48,7 @@ export function AppShell() {
   const [draft, setDraft] = useState<TxDraft | null>(null)
   const [fabOpen, setFabOpen] = useState(false)
   const navigate = useNavigate()
+  useReminderScheduler()
 
   const openTx = (d?: TxDraft) => setDraft(d ?? { type: 'expense' })
 

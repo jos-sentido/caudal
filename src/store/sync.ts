@@ -8,7 +8,7 @@ import { auth, db, googleProvider, firebaseEnabled } from '../lib/firebase'
 import { cloud, type Collname } from './cloudBridge'
 import { useStore } from './useStore'
 
-const COLLECTIONS: Collname[] = ['accounts', 'cards', 'categories', 'transactions', 'recurrings', 'budgets']
+const COLLECTIONS: Collname[] = ['accounts', 'cards', 'categories', 'transactions', 'recurrings', 'budgets', 'reminders']
 
 let unsubs: (() => void)[] = []
 let suppress = false // evita que las actualizaciones remotas re-escriban al servidor
@@ -69,6 +69,7 @@ async function startSync(uid: string) {
       transactions: serverData.transactions as any,
       recurrings: serverData.recurrings as any,
       budgets: serverData.budgets as any,
+      reminders: serverData.reminders as any,
     })
     suppress = false
     seedPrev(serverData)

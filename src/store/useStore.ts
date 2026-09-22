@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type {
-  Account, Budget, Category, CreditCard, Recurring, Transaction, Settings,
+  Account, Budget, Category, CreditCard, Recurring, Transaction, Settings, Reminder,
 } from '../lib/types'
 import { uid } from '../lib/format'
 import { SEED, emptyData } from './seed'
@@ -13,6 +13,7 @@ interface State {
   transactions: Transaction[]
   recurrings: Recurring[]
   budgets: Budget[]
+  reminders: Reminder[]
   settings: Settings
 
   // UI state (no persistido salvo mes)
@@ -51,6 +52,12 @@ interface State {
   addRecurring: (r: Omit<Recurring, 'id'>) => void
   updateRecurring: (id: string, patch: Partial<Recurring>) => void
   deleteRecurring: (id: string) => void
+
+  // Reminders
+  addReminder: (r: Omit<Reminder, 'id'>) => void
+  updateReminder: (id: string, patch: Partial<Reminder>) => void
+  deleteReminder: (id: string) => void
+  markReminderFired: (id: string, iso: string) => void
 
   // Data mgmt
   resetSeed: () => void
@@ -121,6 +128,13 @@ export const useStore = create<State>()(
         set((s) => ({ recurrings: s.recurrings.map((r) => (r.id === id ? { ...r, ...patch } : r)) })),
       deleteRecurring: (id) => set((s) => ({ recurrings: s.recurrings.filter((r) => r.id !== id) })),
 
+      addReminder: (r) => set((s) => ({ reminders: [...s.reminders, { ...r, id: uid() }] })),
+      updateReminder: (id, patch) =>
+        set((s) => ({ reminders: s.reminders.map((r) => (r.id === id ? { ...r, ...patch } : r)) })),
+      deleteReminder: (id) => set((s) => ({ reminders: s.reminders.filter((r) => r.id !== id) })),
+      markReminderFired: (id, iso) =>
+        set((s) => ({ reminders: s.reminders.map((r) => (r.id === id ? { ...r, lastFired: iso } : r)) })),
+
       resetSeed: () => set({ ...SEED }),
       clearAll: () => set({ ...emptyData() }),
       importData: (data) => set((s) => ({ ...s, ...data })),
@@ -134,6 +148,7 @@ export const useStore = create<State>()(
         transactions: s.transactions,
         recurrings: s.recurrings,
         budgets: s.budgets,
+        reminders: s.reminders,
         settings: s.settings,
       }),
     },

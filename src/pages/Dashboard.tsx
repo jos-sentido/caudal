@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
-import { Eye, EyeOff, TrendingUp, TrendingDown, Plus, ChevronRight, CreditCard, UserCircle2 } from 'lucide-react'
+import { Eye, EyeOff, TrendingUp, TrendingDown, Plus, ChevronRight, CreditCard, UserCircle2, BellRing } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { MonthNav } from '../components/MonthNav'
 import { IconBubble } from '../components/ui'
 import { money, moneyShort } from '../lib/format'
+import { nextOccurrence, dueOccurrence, whenLabel } from '../lib/recurrence'
 import {
   accountCurrent, totalCurrentBalance, monthTotals, expenseByCategory, cardUsed, budgetProgress,
 } from '../store/selectors'
@@ -25,6 +26,22 @@ export function Dashboard() {
     [s.budgets, s.categories, s.transactions, s.year, s.month],
   )
 
+  const reminderInfo = useMemo(() => {
+    const now = new Date()
+    const items = s.reminders
+      .filter((r) => r.active)
+      .map((r) => ({ r, next: nextOccurrence(r, now), due: dueOccurrence(r, now) }))
+    const overdueSet = new Set(
+      items.filter((x) => x.due && (!x.r.lastFired || new Date(x.r.lastFired) < x.due)).map((x) => x.r.id),
+    )
+    const upcoming = items
+      .filter((x) => x.next)
+      .sort((a, b) => a.next!.getTime() - b.next!.getTime())
+      .slice(0, 3)
+    return { overdueCount: overdueSet.size, upcoming, overdueSet }
+  }, [s.reminders])
+  const overdueCount = reminderInfo.overdueCount
+
   const topSlices = slices.slice(0, 4)
   const otherTotal = slices.slice(4).reduce((a, b) => a + b.total, 0)
   const donutData = [
@@ -39,7 +56,12 @@ export function Dashboard() {
         <div className="flex items-center justify-between mb-2">
           <Link to="/mas" className="text-muted"><UserCircle2 size={30} strokeWidth={1.5} /></Link>
           <div className="flex-1"><MonthNav /></div>
-          <div className="w-[30px]" />
+          <Link to="/recordatorios" className="relative text-muted w-[30px] grid place-items-center">
+            <BellRing size={22} />
+            {overdueCount > 0 && (
+              <span className="absolute -top-1 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-expense text-white text-[10px] font-bold grid place-items-center">{overdueCount}</span>
+            )}
+          </Link>
         </div>
 
         <div className="text-center mt-3">
@@ -76,6 +98,32 @@ export function Dashboard() {
       </div>
 
       <div className="px-4 mt-6 space-y-6">
+        {/* Recordatorios próximos */}
+        {reminderInfo.upcoming.length > 0 && (
+          <Section title="Recordatorios" to="/recordatorios">
+            <div className="bg-surface rounded-2xl px-3 divide-y divide-line/40">
+              {reminderInfo.upcoming.map(({ r, next }) => {
+                const cat = s.categories.find((c) => c.id === r.categoryId)
+                const over = reminderInfo.overdueSet.has(r.id)
+                const color = cat?.color ?? (r.kind === 'income' ? '#37c978' : r.kind === 'card' ? '#4f7cff' : r.kind === 'other' ? '#8b5cf6' : '#f0574f')
+                const icon = cat?.icon ?? (r.kind === 'income' ? 'coins' : r.kind === 'card' ? 'card' : r.kind === 'other' ? 'star' : 'receipt')
+                return (
+                  <Link key={r.id} to="/recordatorios" className="flex items-center gap-3 py-3 active:opacity-70">
+                    <IconBubble color={color} icon={icon} size={38} iconSize={17} />
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-[15px] truncate">{r.title}</div>
+                      <div className={`text-xs truncate ${over ? 'text-expense' : 'text-muted'}`}>
+                        {over ? 'Vencido · ' : ''}{next ? whenLabel(next) : ''}
+                      </div>
+                    </div>
+                    {r.amount ? <div className="font-semibold text-sm">{money(r.amount, { hide })}</div> : null}
+                  </Link>
+                )
+              })}
+            </div>
+          </Section>
+        )}
+
         {/* Cuentas */}
         <Section title="Cuentas" to="/cuentas">
           <div className="bg-surface rounded-2xl p-2 divide-y divide-line/60">

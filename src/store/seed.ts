@@ -1,4 +1,4 @@
-import type { AppData, Account, Category, Transaction, Budget, Recurring, CreditCard } from '../lib/types'
+import type { AppData, Account, Category, Transaction, Budget, Recurring, CreditCard, Reminder } from '../lib/types'
 
 // Datos de ejemplo basados en la estructura real (puedes borrarlos desde Ajustes)
 
@@ -88,6 +88,8 @@ function card_tx(
   return { id, type: 'expense', amount, date, description, categoryId, cardId, accountId: null, confirmed: true, createdAt: Date.now() }
 }
 
+const reminders: Reminder[] = []
+
 export const SEED: AppData = {
   accounts,
   cards,
@@ -95,6 +97,7 @@ export const SEED: AppData = {
   transactions,
   recurrings,
   budgets,
+  reminders,
   settings: { currency: 'MXN', locale: 'es-MX', hideBalances: false, seeded: true },
 }
 
@@ -106,6 +109,7 @@ export function emptyData(): AppData {
     transactions: [],
     recurrings: [],
     budgets: [],
+    reminders: [],
     settings: { currency: 'MXN', locale: 'es-MX', hideBalances: false, seeded: true },
   }
 }

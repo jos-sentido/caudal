@@ -10,6 +10,7 @@ import { CardDetail } from './pages/CardDetail'
 import { Categories } from './pages/Categories'
 import { Budgets } from './pages/Budgets'
 import { Recurring } from './pages/Recurring'
+import { Reminders } from './pages/Reminders'
 import { Reports } from './pages/Reports'
 import { More } from './pages/More'
 
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/categorias" element={<Categories />} />
         <Route path="/presupuestos" element={<Budgets />} />
         <Route path="/recurrentes" element={<Recurring />} />
+        <Route path="/recordatorios" element={<Reminders />} />
         <Route path="/reportes" element={<Reports />} />
         <Route path="/mas" element={<More />} />
       </Route>

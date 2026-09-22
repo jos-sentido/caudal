@@ -15,7 +15,7 @@ export function TxRow({ t, onClick, hide }: { t: Transaction; onClick?: () => vo
   const isTransfer = t.type === 'transfer'
   const color = isTransfer ? 'var(--color-brand)' : t.type === 'income' ? 'var(--color-income)' : 'var(--color-expense)'
   const sub = isTransfer
-    ? `${acc?.name ?? '—'} → ${toAcc?.name ?? '—'}`
+    ? `${acc?.name ?? '—'} → ${card ? `${card.name} 💳` : (toAcc?.name ?? '—')}`
     : [cat?.name, card ? `${card.name} 💳` : acc?.name].filter(Boolean).join('  ·  ')
 
   return (

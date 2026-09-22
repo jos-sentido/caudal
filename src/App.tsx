@@ -6,6 +6,7 @@ import { Transactions } from './pages/Transactions'
 import { Accounts } from './pages/Accounts'
 import { AccountDetail } from './pages/AccountDetail'
 import { CreditCards } from './pages/CreditCards'
+import { CardDetail } from './pages/CardDetail'
 import { Categories } from './pages/Categories'
 import { Budgets } from './pages/Budgets'
 import { Recurring } from './pages/Recurring'
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/cuentas" element={<Accounts />} />
         <Route path="/cuenta/:id" element={<AccountDetail />} />
         <Route path="/tarjetas" element={<CreditCards />} />
+        <Route path="/tarjeta/:id" element={<CardDetail />} />
         <Route path="/categorias" element={<Categories />} />
         <Route path="/presupuestos" element={<Budgets />} />
         <Route path="/recurrentes" element={<Recurring />} />

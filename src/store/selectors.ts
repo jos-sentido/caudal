@@ -81,13 +81,14 @@ export function expenseByCategory(
   return slices.sort((a, b) => b.total - a.total)
 }
 
-/** Saldo usado de una tarjeta = cargos - pagos (transferencias hacia la tarjeta vía cardId en income no aplica) */
+/** Saldo usado de una tarjeta = cargos - pagos.
+ * Cargo: gasto con cardId. Pago: transferencia (cuenta → tarjeta) o abono (income) con cardId. */
 export function cardUsed(card: CreditCard, txns: Transaction[]): number {
   let used = 0
   for (const t of txns) {
     if (t.cardId !== card.id) continue
     if (t.type === 'expense') used += t.amount
-    else if (t.type === 'income') used -= t.amount // abono/pago a la tarjeta
+    else used -= t.amount // income o transfer hacia la tarjeta = pago/abono
   }
   return used
 }

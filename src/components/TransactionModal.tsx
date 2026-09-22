@@ -9,6 +9,8 @@ import { Sheet, Field, inputCls, Segmented, Btn, IconBubble } from './ui'
 export interface TxDraft {
   id?: string
   type?: TxType
+  cardId?: string
+  accountId?: string
 }
 
 export function TransactionModal({
@@ -24,10 +26,10 @@ export function TransactionModal({
   const [amount, setAmount] = useState(editing ? String(editing.amount) : '')
   const [description, setDescription] = useState(editing?.description ?? '')
   const [categoryId, setCategoryId] = useState<string | null>(editing?.categoryId ?? null)
-  const [accountId, setAccountId] = useState<string | null>(editing?.accountId ?? store.accounts[0]?.id ?? null)
+  const [accountId, setAccountId] = useState<string | null>(editing?.accountId ?? draft?.accountId ?? store.accounts[0]?.id ?? null)
   const [toAccountId, setToAccountId] = useState<string | null>(editing?.toAccountId ?? store.accounts[1]?.id ?? null)
-  const [cardId, setCardId] = useState<string | null>(editing?.cardId ?? null)
-  const [payWith, setPayWith] = useState<'account' | 'card'>(editing?.cardId ? 'card' : 'account')
+  const [cardId, setCardId] = useState<string | null>(editing?.cardId ?? draft?.cardId ?? null)
+  const [payWith, setPayWith] = useState<'account' | 'card'>(editing?.cardId || draft?.cardId ? 'card' : 'account')
   const [date, setDate] = useState(editing?.date ?? todayISO())
   const [confirmed, setConfirmed] = useState(editing?.confirmed ?? true)
   const [notes, setNotes] = useState(editing?.notes ?? '')

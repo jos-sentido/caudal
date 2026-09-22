@@ -115,7 +115,7 @@ export function Dashboard() {
                 const used = cardUsed(c, s.transactions)
                 const pct = c.limit ? Math.min((used / c.limit) * 100, 100) : 0
                 return (
-                  <div key={c.id} className="px-2 py-3">
+                  <Link key={c.id} to={`/tarjeta/${c.id}`} className="block px-2 py-3 active:opacity-70 transition-opacity">
                     <div className="flex items-center gap-3">
                       <IconBubble color={c.color} icon="card" size={40} iconSize={18} />
                       <div className="flex-1 min-w-0">
@@ -127,7 +127,7 @@ export function Dashboard() {
                     <div className="h-1.5 bg-surface-2 rounded-full mt-2.5 overflow-hidden">
                       <div className="h-full rounded-full" style={{ width: `${pct}%`, background: c.color }} />
                     </div>
-                  </div>
+                  </Link>
                 )
               })}
             </div>

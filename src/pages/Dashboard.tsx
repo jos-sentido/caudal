@@ -105,7 +105,7 @@ export function Dashboard() {
               {reminderInfo.upcoming.map(({ r, next }) => {
                 const cat = s.categories.find((c) => c.id === r.categoryId)
                 const over = reminderInfo.overdueSet.has(r.id)
-                const color = cat?.color ?? (r.kind === 'income' ? '#37c978' : r.kind === 'card' ? '#4f7cff' : r.kind === 'other' ? '#8b5cf6' : '#f0574f')
+                const color = cat?.color ?? (r.kind === 'income' ? '#3fbf6f' : r.kind === 'card' ? '#4f7cff' : r.kind === 'other' ? '#f5a623' : '#ef4d43')
                 const icon = cat?.icon ?? (r.kind === 'income' ? 'coins' : r.kind === 'card' ? 'card' : r.kind === 'other' ? 'star' : 'receipt')
                 return (
                   <Link key={r.id} to="/recordatorios" className="flex items-center gap-3 py-3 active:opacity-70">

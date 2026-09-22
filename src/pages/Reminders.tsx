@@ -15,7 +15,7 @@ const KIND_META: Record<ReminderKind, { label: string; color: string; icon: stri
   expense: { label: 'Gasto', color: '#f0574f', icon: 'receipt' },
   income: { label: 'Ingreso', color: '#37c978', icon: 'coins' },
   card: { label: 'Pago tarjeta', color: '#4f7cff', icon: 'card' },
-  other: { label: 'Otro', color: '#8b5cf6', icon: 'star' },
+  other: { label: 'Otro', color: '#f5a623', icon: 'star' },
 }
 
 export function Reminders() {

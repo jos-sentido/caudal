@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from 'react'
+import { type ReactNode, useEffect, useRef } from 'react'
 import { X, ChevronLeft } from 'lucide-react'
 import clsx from 'clsx'
 import { CatIcon } from '../lib/icons'
@@ -41,22 +41,44 @@ export function Sheet({
   children: ReactNode
   footer?: ReactNode
 }) {
+  const frameRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
+
+    // Ancla el sheet al área visible (encima del teclado) usando el visual viewport
+    const vv = window.visualViewport
+    const apply = () => {
+      const el = frameRef.current
+      if (!el || !vv) return
+      el.style.height = `${vv.height}px`
+      el.style.top = `${vv.offsetTop}px`
+    }
+    apply()
+    vv?.addEventListener('resize', apply)
+    vv?.addEventListener('scroll', apply)
+
     return () => {
       window.removeEventListener('keydown', onKey)
       document.body.style.overflow = ''
+      vv?.removeEventListener('resize', apply)
+      vv?.removeEventListener('scroll', apply)
     }
   }, [open, onClose])
 
   if (!open) return null
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center animate-fade">
+    <div className="fixed inset-0 z-50 animate-fade">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full sm:max-w-md bg-ink-2 rounded-t-3xl sm:rounded-3xl border border-line max-h-[92vh] flex flex-col animate-sheet shadow-2xl">
+      <div
+        ref={frameRef}
+        className="absolute inset-x-0 top-0 flex items-end justify-center sm:items-center"
+        style={{ height: '100dvh' }}
+      >
+      <div className="relative w-full sm:max-w-md bg-ink-2 rounded-t-3xl sm:rounded-3xl border border-line max-h-[92dvh] flex flex-col animate-sheet shadow-2xl">
         <div className="flex items-center justify-between px-5 pt-4 pb-3 shrink-0">
           <div className="text-base font-semibold">{title}</div>
           <button onClick={onClose} className="grid place-items-center w-9 h-9 rounded-full bg-surface text-muted hover:text-white">
@@ -65,6 +87,7 @@ export function Sheet({
         </div>
         <div className="px-5 overflow-y-auto no-scrollbar flex-1">{children}</div>
         {footer && <div className="p-4 border-t border-line shrink-0 safe-b">{footer}</div>}
+      </div>
       </div>
     </div>
   )

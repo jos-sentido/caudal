@@ -57,7 +57,7 @@ function CategoryModal({ category, defaultKind, onClose }: { category: Category 
   const s = useStore()
   const [name, setName] = useState(category?.name ?? '')
   const [kind, setKind] = useState<CategoryKind>(category?.kind ?? defaultKind)
-  const [color, setColor] = useState(category?.color ?? '#7c5cff')
+  const [color, setColor] = useState(category?.color ?? '#f2731d')
   const [icon, setIcon] = useState(category?.icon ?? 'tag')
 
   const save = () => {

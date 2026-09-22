@@ -2,14 +2,15 @@
 // La dispara un cron (GitHub Actions) cada ~15 min. Requiere variables de entorno:
 //   FIREBASE_SERVICE_ACCOUNT  -> JSON de la llave de servicio de Firebase (secreto)
 //   CRON_SECRET               -> token compartido con el cron para autorizar la llamada
-import admin from 'firebase-admin'
+import { initializeApp, getApps, cert } from 'firebase-admin/app'
+import { getFirestore } from 'firebase-admin/firestore'
+import { getMessaging } from 'firebase-admin/messaging'
 
 function ensureApp() {
-  if (!admin.apps.length) {
+  if (!getApps().length) {
     const sa = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}')
-    admin.initializeApp({ credential: admin.credential.cert(sa) })
+    initializeApp({ credential: cert(sa) })
   }
-  return admin.app()
 }
 
 // --- Lógica de recurrencia (equivalente a src/lib/recurrence.ts) ---
@@ -59,7 +60,8 @@ export default async function handler(req, res) {
 
   try {
     ensureApp()
-    const db = admin.firestore()
+    const db = getFirestore()
+    const messaging = getMessaging()
     const now = new Date()
     const snap = await db.collectionGroup('reminders').get()
 
@@ -85,7 +87,7 @@ export default async function handler(req, res) {
         const body = r.amount
           ? `${money(r.amount)} · toca para registrarlo`
           : (r.note || 'Recordatorio de Caudal')
-        const resp = await admin.messaging().sendEachForMulticast({
+        const resp = await messaging.sendEachForMulticast({
           tokens,
           data: {
             title: String(r.title || 'Caudal'),

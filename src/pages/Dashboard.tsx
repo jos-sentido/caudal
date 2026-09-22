@@ -81,7 +81,7 @@ export function Dashboard() {
           <div className="bg-surface rounded-2xl p-2 divide-y divide-line/60">
             {s.accounts.length === 0 && <AddRow to="/cuentas" label="Agregar cuenta" />}
             {s.accounts.map((a) => (
-              <div key={a.id} className="flex items-center gap-3 px-2 py-3">
+              <Link key={a.id} to={`/cuenta/${a.id}`} className="flex items-center gap-3 px-2 py-3 active:opacity-70 transition-opacity">
                 <IconBubble color={a.color} icon={a.icon} size={40} iconSize={18} />
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-[15px] truncate">{a.name}</div>
@@ -89,7 +89,8 @@ export function Dashboard() {
                 <div className="font-semibold" style={{ color: accountCurrent(a, s.transactions) < 0 ? 'var(--color-expense)' : 'var(--color-income)' }}>
                   {money(accountCurrent(a, s.transactions), { hide })}
                 </div>
-              </div>
+                <ChevronRight size={16} className="text-faint" />
+              </Link>
             ))}
             {s.accounts.length > 0 && (
               <div className="flex items-center justify-between px-2 py-3">

@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Search, ListChecks } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { MonthNav } from '../components/MonthNav'
@@ -14,9 +15,15 @@ type Filter = 'all' | TxType
 export function Transactions() {
   const s = useStore()
   const { openTx } = useTxModal()
-  const [filter, setFilter] = useState<Filter>('all')
+  const [params] = useSearchParams()
+  const [filter, setFilter] = useState<Filter>(paramToFilter(params.get('tipo')))
   const [q, setQ] = useState('')
   const [showSearch, setShowSearch] = useState(false)
+
+  // Sincroniza el filtro cuando se llega con ?tipo= (p. ej. desde los KPIs del inicio)
+  useEffect(() => {
+    setFilter(paramToFilter(params.get('tipo')))
+  }, [params])
 
   const hide = s.settings.hideBalances
   const totals = useMemo(() => monthTotals(s.transactions, s.year, s.month), [s.transactions, s.year, s.month])
@@ -108,6 +115,11 @@ export function Transactions() {
       </div>
     </div>
   )
+}
+
+function paramToFilter(tipo: string | null): Filter {
+  if (tipo === 'income' || tipo === 'expense' || tipo === 'transfer') return tipo
+  return 'all'
 }
 
 function groupByDay(items: Transaction[]): [string, Transaction[]][] {

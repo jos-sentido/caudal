@@ -54,7 +54,7 @@ export function Dashboard() {
 
         {/* Ingresos / Gastos */}
         <div className="grid grid-cols-2 gap-3 mt-4">
-          <div className="bg-surface rounded-2xl p-3 flex items-center gap-2.5">
+          <Link to="/movimientos?tipo=income" className="bg-surface rounded-2xl p-3 flex items-center gap-2.5 active:opacity-70 transition-opacity">
             <div className="w-9 h-9 rounded-full bg-income/15 grid place-items-center text-income shrink-0">
               <TrendingUp size={18} />
             </div>
@@ -62,8 +62,8 @@ export function Dashboard() {
               <div className="text-xs text-muted leading-tight">Ingresos</div>
               <div className="font-bold text-income text-[15px] leading-tight truncate">{money(totals.income, { hide })}</div>
             </div>
-          </div>
-          <div className="bg-surface rounded-2xl p-3 flex items-center gap-2.5">
+          </Link>
+          <Link to="/movimientos?tipo=expense" className="bg-surface rounded-2xl p-3 flex items-center gap-2.5 active:opacity-70 transition-opacity">
             <div className="w-9 h-9 rounded-full bg-expense/15 grid place-items-center text-expense shrink-0">
               <TrendingDown size={18} />
             </div>
@@ -71,7 +71,7 @@ export function Dashboard() {
               <div className="text-xs text-muted leading-tight">Gastos</div>
               <div className="font-bold text-expense text-[15px] leading-tight truncate">{money(totals.expense, { hide })}</div>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
 

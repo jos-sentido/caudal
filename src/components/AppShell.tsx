@@ -63,7 +63,7 @@ export function AppShell() {
         </div>
       </nav>
 
-      <TransactionModal draft={draft} onClose={() => setDraft(null)} />
+      {draft && <TransactionModal key={draft.id ?? 'new'} draft={draft} onClose={() => setDraft(null)} />}
     </Ctx.Provider>
   )
 }

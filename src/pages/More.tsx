@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Wallet2, CreditCard, Bookmark, Wallet, Repeat, PieChart, Eye, EyeOff,
-  Download, Upload, RotateCcw, Trash2, ChevronRight, Cloud, UserCircle2, LogOut, CloudOff, BellRing,
+  Download, Upload, FilePlus2, RotateCcw, Trash2, ChevronRight, Cloud, UserCircle2, LogOut, CloudOff, BellRing,
 } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { useAuth } from '../components/AuthGate'
@@ -43,6 +43,25 @@ export function More() {
       }
     }
     reader.readAsText(file)
+    e.target.value = ''
+  }
+
+  const mergeFileRef = useRef<HTMLInputElement>(null)
+  const mergeJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(String(reader.result))
+        s.mergeData(data)
+        alert('Movimientos agregados ✓')
+      } catch {
+        alert('Archivo inválido')
+      }
+    }
+    reader.readAsText(file)
+    e.target.value = ''
   }
 
   return (
@@ -92,10 +111,22 @@ export function More() {
         </button>
         <button onClick={() => fileRef.current?.click()} className="flex items-center gap-3 w-full px-4 py-3.5">
           <span className="text-muted"><Upload size={20} /></span>
-          <span className="flex-1 text-left font-medium">Importar respaldo</span>
+          <span className="flex-1 text-left">
+            <span className="font-medium block">Importar respaldo</span>
+            <span className="text-xs text-muted">Reemplaza todo con el archivo</span>
+          </span>
           <ChevronRight size={18} className="text-faint" />
         </button>
         <input ref={fileRef} type="file" accept="application/json" className="hidden" onChange={importJSON} />
+        <button onClick={() => mergeFileRef.current?.click()} className="flex items-center gap-3 w-full px-4 py-3.5">
+          <span className="text-muted"><FilePlus2 size={20} /></span>
+          <span className="flex-1 text-left">
+            <span className="font-medium block">Importar y agregar</span>
+            <span className="text-xs text-muted">Suma movimientos sin borrar lo que ya tienes</span>
+          </span>
+          <ChevronRight size={18} className="text-faint" />
+        </button>
+        <input ref={mergeFileRef} type="file" accept="application/json" className="hidden" onChange={mergeJSON} />
       </Group>
 
       <Group title="Sincronización">

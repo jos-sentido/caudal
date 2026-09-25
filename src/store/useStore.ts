@@ -63,6 +63,17 @@ interface State {
   resetSeed: () => void
   clearAll: () => void
   importData: (data: Partial<State>) => void
+  mergeData: (data: Partial<State>) => void
+}
+
+const MERGE_COLLS = ['accounts', 'cards', 'categories', 'transactions', 'recurrings', 'budgets', 'reminders'] as const
+
+/** Combina dos arreglos por id (upsert): conserva los existentes y agrega/actualiza los entrantes. */
+function upsertById<T extends { id: string }>(current: T[], incoming?: T[]): T[] {
+  if (!incoming?.length) return current
+  const map = new Map(current.map((it) => [it.id, it]))
+  for (const it of incoming) map.set(it.id, { ...map.get(it.id), ...it })
+  return [...map.values()]
 }
 
 const now = new Date()
@@ -138,6 +149,15 @@ export const useStore = create<State>()(
       resetSeed: () => set({ ...SEED }),
       clearAll: () => set({ ...emptyData() }),
       importData: (data) => set((s) => ({ ...s, ...data })),
+      mergeData: (data) =>
+        set((s) => {
+          const patch: Partial<State> = {}
+          for (const c of MERGE_COLLS) {
+            if (data[c]) patch[c] = upsertById(s[c] as any[], data[c] as any[]) as any
+          }
+          if (data.settings) patch.settings = { ...s.settings, ...data.settings }
+          return patch
+        }),
     }),
     {
       name: 'caudal-store-v1',

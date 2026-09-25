@@ -1,13 +1,14 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Wallet2, CreditCard, Bookmark, Wallet, Repeat, PieChart, Eye, EyeOff,
-  Download, Upload, FilePlus2, RotateCcw, Trash2, ChevronRight, Cloud, UserCircle2, LogOut, CloudOff, BellRing,
+  Download, Upload, FilePlus2, ClipboardPaste, RotateCcw, Trash2, ChevronRight, Cloud, UserCircle2, LogOut, CloudOff, BellRing,
 } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { useAuth } from '../components/AuthGate'
 import { money } from '../lib/format'
 import { totalCurrentBalance } from '../store/selectors'
+import { Sheet, Btn, Segmented } from '../components/ui'
 
 export function More() {
   const s = useStore()
@@ -64,6 +65,8 @@ export function More() {
     e.target.value = ''
   }
 
+  const [pasteOpen, setPasteOpen] = useState(false)
+
   return (
     <div className="pt-4 safe-t">
       {/* Perfil */}
@@ -117,7 +120,7 @@ export function More() {
           </span>
           <ChevronRight size={18} className="text-faint" />
         </button>
-        <input ref={fileRef} type="file" accept="application/json" className="hidden" onChange={importJSON} />
+        <input ref={fileRef} type="file" accept=".json,application/json,text/plain,application/octet-stream,*/*" className="hidden" onChange={importJSON} />
         <button onClick={() => mergeFileRef.current?.click()} className="flex items-center gap-3 w-full px-4 py-3.5">
           <span className="text-muted"><FilePlus2 size={20} /></span>
           <span className="flex-1 text-left">
@@ -126,8 +129,18 @@ export function More() {
           </span>
           <ChevronRight size={18} className="text-faint" />
         </button>
-        <input ref={mergeFileRef} type="file" accept="application/json" className="hidden" onChange={mergeJSON} />
+        <input ref={mergeFileRef} type="file" accept=".json,application/json,text/plain,application/octet-stream,*/*" className="hidden" onChange={mergeJSON} />
+        <button onClick={() => setPasteOpen(true)} className="flex items-center gap-3 w-full px-4 py-3.5">
+          <span className="text-muted"><ClipboardPaste size={20} /></span>
+          <span className="flex-1 text-left">
+            <span className="font-medium block">Pegar respaldo (JSON)</span>
+            <span className="text-xs text-muted">Pega el contenido si el archivo no carga</span>
+          </span>
+          <ChevronRight size={18} className="text-faint" />
+        </button>
       </Group>
+
+      {pasteOpen && <PasteModal onClose={() => setPasteOpen(false)} />}
 
       <Group title="Sincronización">
         {cloud && user ? (
@@ -169,6 +182,57 @@ export function More() {
 
       <div className="text-center text-xs text-faint py-6">Caudal · v0.1 · hecho para ti</div>
     </div>
+  )
+}
+
+function PasteModal({ onClose }: { onClose: () => void }) {
+  const s = useStore()
+  const [text, setText] = useState('')
+  const [mode, setMode] = useState<'replace' | 'merge'>('replace')
+
+  const load = () => {
+    let data: unknown
+    try {
+      data = JSON.parse(text.trim())
+    } catch {
+      alert('El texto no es un JSON válido. Copia todo el contenido del archivo.')
+      return
+    }
+    if (mode === 'replace') s.importData(data as never)
+    else s.mergeData(data as never)
+    alert(mode === 'replace' ? 'Datos importados ✓' : 'Movimientos agregados ✓')
+    onClose()
+  }
+
+  return (
+    <Sheet
+      open
+      onClose={onClose}
+      title="Pegar respaldo (JSON)"
+      footer={<Btn onClick={load} disabled={!text.trim()}>Cargar</Btn>}
+    >
+      <div className="pb-4">
+        <div className="mb-3">
+          <Segmented
+            options={[{ value: 'replace', label: 'Reemplazar' }, { value: 'merge', label: 'Agregar' }]}
+            value={mode}
+            onChange={setMode}
+          />
+        </div>
+        <textarea
+          autoFocus
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder='Pega aquí el contenido del JSON (empieza con { … })'
+          className="w-full h-64 bg-surface border border-line rounded-xl px-3.5 py-3 text-xs font-mono outline-none focus:border-brand placeholder:text-faint resize-none"
+        />
+        <p className="text-xs text-muted mt-2 px-1">
+          {mode === 'replace'
+            ? 'Reemplaza todos tus datos con el JSON pegado.'
+            : 'Suma lo del JSON sin borrar lo que ya tienes.'}
+        </p>
+      </div>
+    </Sheet>
   )
 }
 

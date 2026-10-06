@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 import { Eye, EyeOff, TrendingUp, TrendingDown, Plus, ChevronRight, CreditCard, UserCircle2, BellRing } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { MonthNav } from '../components/MonthNav'
+import { SpaceSwitcher } from '../components/SpaceSwitcher'
 import { IconBubble } from '../components/ui'
 import { money, moneyShort } from '../lib/format'
 import { nextOccurrence, dueOccurrence, whenLabel } from '../lib/recurrence'
@@ -53,6 +54,7 @@ export function Dashboard() {
     <div>
       {/* Header */}
       <div className="px-4 pt-4 safe-t">
+        <div className="mb-2"><SpaceSwitcher /></div>
         <div className="flex items-center justify-between mb-2">
           <Link to="/mas" className="text-muted"><UserCircle2 size={30} strokeWidth={1.5} /></Link>
           <div className="flex-1"><MonthNav /></div>

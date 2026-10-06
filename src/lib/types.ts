@@ -95,6 +95,31 @@ export interface Settings {
   seeded: boolean
 }
 
+// --- Colaboración / espacios compartidos ---
+export type SpaceRole = 'owner' | 'editor'
+
+/** Referencia ligera a un espacio al que pertenece el usuario (índice en users/{uid}/meta/spaces). */
+export interface SpaceRef {
+  id: string
+  name: string
+  role: SpaceRole
+}
+
+export interface SpaceMember {
+  role: SpaceRole
+  name: string
+  email: string
+  since: number
+}
+
+/** Documento spaces/{id}/meta/info. */
+export interface SpaceInfo {
+  name: string
+  createdBy: string
+  createdAt: number
+  members: Record<string, SpaceMember>
+}
+
 export interface AppData {
   accounts: Account[]
   cards: CreditCard[]

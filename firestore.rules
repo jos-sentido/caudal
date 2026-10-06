@@ -1,9 +1,40 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Cada usuario solo puede leer y escribir sus propios datos.
-    match /users/{userId}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+    function signedIn() { return request.auth != null; }
+
+    // ---------- Espacio personal ----------
+    // Cada usuario solo lee/escribe su propio árbol (incluye fcmTokens, meta/settings, meta/spaces).
+    match /users/{uid}/{document=**} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
+    // ---------- Espacios compartidos ----------
+    function isMember(spaceId) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/spaces/$(spaceId)/meta/info)
+        && (request.auth.uid in get(/databases/$(database)/documents/spaces/$(spaceId)/meta/info).data.members);
+    }
+
+    // meta/info guarda la membresía: la escribe SOLO el servidor (admin SDK).
+    // El resto de meta (settings…) lo pueden escribir los miembros.
+    match /spaces/{spaceId}/meta/{doc} {
+      allow read: if isMember(spaceId);
+      allow write: if isMember(spaceId) && doc != 'info';
+    }
+
+    // Colecciones de datos: cualquier miembro (rol editor) lee y escribe.
+    match /spaces/{spaceId}/{coll}/{docId} {
+      allow read, write: if isMember(spaceId)
+        && coll in ['accounts', 'cards', 'categories', 'transactions', 'recurrings', 'budgets', 'reminders'];
+    }
+
+    // ---------- Invitaciones ----------
+    // Se crean/aceptan desde el servidor (admin SDK). El cliente solo podría leerlas.
+    match /invites/{code} {
+      allow read: if signedIn();
+      allow write: if false;
     }
   }
 }

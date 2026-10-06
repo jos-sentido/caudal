@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Wallet2, CreditCard, Bookmark, Wallet, Repeat, PieChart, Eye, EyeOff,
-  Download, Upload, FilePlus2, ClipboardPaste, RotateCcw, Trash2, ChevronRight, Cloud, UserCircle2, LogOut, CloudOff, BellRing,
+  Download, Upload, FilePlus2, ClipboardPaste, RotateCcw, Trash2, ChevronRight, Cloud, UserCircle2, LogOut, CloudOff, BellRing, Users, Home,
 } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { useAuth } from '../components/AuthGate'
@@ -67,6 +67,9 @@ export function More() {
 
   const [pasteOpen, setPasteOpen] = useState(false)
 
+  const activeSpace = s.spaces.find((sp) => sp.id === s.activeSpaceId)
+  const spaceName = activeSpace ? activeSpace.name : 'Personal'
+
   return (
     <div className="pt-4 safe-t">
       {/* Perfil */}
@@ -85,6 +88,19 @@ export function More() {
           </div>
         </div>
       </div>
+
+      {cloud && user && (
+        <Group title="Colaboración">
+          <Link to="/colaborar" className="flex items-center gap-3 px-4 py-3.5">
+            <span className="text-muted">{activeSpace ? <Users size={20} /> : <Home size={20} />}</span>
+            <span className="flex-1">
+              <span className="font-medium block">Espacios compartidos</span>
+              <span className="text-xs text-muted">Activo: {spaceName}</span>
+            </span>
+            <ChevronRight size={18} className="text-faint" />
+          </Link>
+        </Group>
+      )}
 
       <Group title="Administrar">
         <Item to="/cuentas" icon={<Wallet2 size={20} />} label="Cuentas" />

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type {
-  Account, Budget, Category, CreditCard, Recurring, Transaction, Settings, Reminder,
+  Account, Budget, Category, CreditCard, Recurring, Transaction, Settings, Reminder, SpaceRef,
 } from '../lib/types'
 import { uid } from '../lib/format'
 import { SEED, emptyData } from './seed'
@@ -15,6 +15,10 @@ interface State {
   budgets: Budget[]
   reminders: Reminder[]
   settings: Settings
+
+  // Colaboración
+  activeSpaceId: string | null // null = espacio personal
+  spaces: SpaceRef[] // espacios compartidos a los que pertenece el usuario
 
   // UI state (no persistido salvo mes)
   year: number
@@ -82,6 +86,8 @@ export const useStore = create<State>()(
   persist(
     (set) => ({
       ...SEED,
+      activeSpaceId: null,
+      spaces: [],
       year: now.getFullYear(),
       month: now.getMonth(),
 
@@ -170,6 +176,7 @@ export const useStore = create<State>()(
         budgets: s.budgets,
         reminders: s.reminders,
         settings: s.settings,
+        activeSpaceId: s.activeSpaceId,
       }),
     },
   ),

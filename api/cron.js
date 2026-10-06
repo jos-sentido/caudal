@@ -77,6 +77,10 @@ export default async function handler(req, res) {
       if (!due) continue
       if (r.lastFired && new Date(r.lastFired) >= due) continue
 
+      // Solo recordatorios del espacio PERSONAL (users/{uid}/reminders).
+      // Los de espacios compartidos (spaces/{id}/reminders) se ignoran aquí.
+      const parentColl = docSnap.ref.parent.parent && docSnap.ref.parent.parent.parent
+      if (!parentColl || parentColl.id !== 'users') continue
       const uid = docSnap.ref.parent.parent && docSnap.ref.parent.parent.id
       if (!uid) continue
 

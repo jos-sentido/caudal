@@ -1,43 +1,84 @@
 import type { Reminder, ReminderFreq } from './types'
 
-function at(dateISO: string, time: string): Date {
-  const [y, m, d] = dateISO.split('-').map(Number)
-  const [hh, mm] = (time || '09:00').split(':').map(Number)
-  return new Date(y, m - 1, d, hh || 0, mm || 0, 0, 0)
+/** Zona horaria IANA del dispositivo (fallback a México). */
+export function deviceTimeZone(): string {
+  try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Mexico_City' } catch { return 'America/Mexico_City' }
 }
 
-function step(date: Date, freq: ReminderFreq, interval = 1): Date {
-  const d = new Date(date)
+// --- Cálculo de ocurrencias con conciencia de zona horaria ---
+// Un "carrier" es un Date en UTC que ACARREA los números de reloj de pared
+// (año/mes/día/hora/min tal como se ven en la zona del recordatorio). Se avanza
+// la recurrencia sobre esos números y se convierte a instante real según la zona.
+
+/** Desfase (ms) de la zona `tz` en el instante dado: asUTC(wall) - instant. */
+function tzOffsetMs(instant: Date, tz: string): number {
+  const dtf = new Intl.DateTimeFormat('en-US', {
+    timeZone: tz, hourCycle: 'h23',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+  })
+  const p: Record<string, string> = {}
+  for (const part of dtf.formatToParts(instant)) p[part.type] = part.value
+  const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second)
+  return asUTC - instant.getTime()
+}
+
+function carrier(y: number, m: number, d: number, hh: number, mm: number): Date {
+  return new Date(Date.UTC(y, m - 1, d, hh, mm, 0))
+}
+
+/** Convierte un carrier (reloj de pared) al instante real en la zona `tz`. */
+function carrierToInstant(w: Date, tz: string): Date {
+  return new Date(w.getTime() - tzOffsetMs(w, tz))
+}
+
+function stepCarrier(w: Date, freq: ReminderFreq, interval = 1): Date {
+  const d = new Date(w)
   switch (freq) {
-    case 'daily': d.setDate(d.getDate() + 1); break
-    case 'weekly': d.setDate(d.getDate() + 7); break
-    case 'monthly': d.setMonth(d.getMonth() + 1); break
-    case 'yearly': d.setFullYear(d.getFullYear() + 1); break
-    case 'everyN': d.setDate(d.getDate() + Math.max(1, interval)); break
+    case 'daily': d.setUTCDate(d.getUTCDate() + 1); break
+    case 'weekly': d.setUTCDate(d.getUTCDate() + 7); break
+    case 'monthly': d.setUTCMonth(d.getUTCMonth() + 1); break
+    case 'yearly': d.setUTCFullYear(d.getUTCFullYear() + 1); break
+    case 'everyN': d.setUTCDate(d.getUTCDate() + Math.max(1, interval)); break
     case 'once': return new Date(8.64e15)
   }
   return d
 }
 
+function startCarrier(r: Reminder): Date {
+  const [y, m, d] = r.date.split('-').map(Number)
+  const [hh, mm] = (r.time || '09:00').split(':').map(Number)
+  return carrier(y, m, d, hh || 0, mm || 0)
+}
+
 /** Próxima ocurrencia estrictamente posterior a `after`. */
 export function nextOccurrence(r: Reminder, after: Date = new Date()): Date | null {
-  let occ = at(r.date, r.time)
-  if (r.freq === 'once') return occ > after ? occ : null
+  const tz = r.tz || deviceTimeZone()
+  let w = startCarrier(r)
+  if (r.freq === 'once') { const inst = carrierToInstant(w, tz); return inst > after ? inst : null }
   let i = 0
-  while (occ <= after && i < 5000) { occ = step(occ, r.freq, r.interval); i++ }
-  return occ > after && occ.getTime() < 8.64e15 ? occ : null
+  while (i < 5000) {
+    const inst = carrierToInstant(w, tz)
+    if (inst > after) return inst.getTime() < 8.64e15 ? inst : null
+    w = stepCarrier(w, r.freq, r.interval)
+    i++
+  }
+  return null
 }
 
 /** Ocurrencia más reciente <= now que aún no se notificó (posterior a lastFired). */
 export function dueOccurrence(r: Reminder, now: Date = new Date()): Date | null {
+  const tz = r.tz || deviceTimeZone()
   const lower = r.lastFired ? new Date(r.lastFired) : null
-  let occ = at(r.date, r.time)
+  let w = startCarrier(r)
   let due: Date | null = null
   let i = 0
-  while (occ <= now && i < 5000) {
-    if (!lower || occ > lower) due = occ
+  while (i < 5000) {
+    const inst = carrierToInstant(w, tz)
+    if (inst > now) break
+    if (!lower || inst > lower) due = inst
     if (r.freq === 'once') break
-    occ = step(occ, r.freq, r.interval)
+    w = stepCarrier(w, r.freq, r.interval)
     i++
   }
   return due

@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, BellRing, BellOff, Trash2, CalendarClock, Check } from 'lucide-react'
+import { Plus, BellRing, BellOff, Trash2, CalendarClock, Check, Send, Loader2 } from 'lucide-react'
 import clsx from 'clsx'
 import { useStore } from '../store/useStore'
 import { IconBubble, Sheet, Field, inputCls, Btn, Segmented, EmptyState, TopBar } from '../components/ui'
 import { money, todayISO } from '../lib/format'
-import { nextOccurrence, dueOccurrence, whenLabel, freqDescription, FREQ_LABEL } from '../lib/recurrence'
+import { nextOccurrence, dueOccurrence, whenLabel, freqDescription, FREQ_LABEL, deviceTimeZone } from '../lib/recurrence'
 import { canNotify, notifPermission, ensurePermission } from '../lib/notify'
 import { registerPush } from '../lib/fcm'
+import { apiTestPush } from '../store/spaces'
 import { useAuth } from '../components/AuthGate'
 import type { Reminder, ReminderKind, ReminderFreq } from '../lib/types'
 
@@ -22,9 +23,11 @@ export function Reminders() {
   const s = useStore()
   const nav = useNavigate()
   const hide = s.settings.hideBalances
-  const { user } = useAuth()
+  const { user, cloud } = useAuth()
   const [edit, setEdit] = useState<Reminder | 'new' | null>(null)
   const [perm, setPerm] = useState(notifPermission())
+  const [testing, setTesting] = useState(false)
+  const [testMsg, setTestMsg] = useState('')
 
   const sorted = useMemo(() => {
     const now = new Date()
@@ -41,6 +44,25 @@ export function Reminders() {
     const p = await ensurePermission()
     setPerm(p)
     if (p === 'granted' && user) registerPush(user.uid)
+  }
+
+  const sendTest = async () => {
+    setTestMsg('')
+    setTesting(true)
+    try {
+      const p = await ensurePermission()
+      setPerm(p)
+      if (p !== 'granted') { setTestMsg('Primero activa las notificaciones.'); return }
+      if (user) await registerPush(user.uid)
+      const r = await apiTestPush()
+      if (r.ok) setTestMsg('¡Enviada! Debe llegarte en unos segundos.')
+      else if (r.reason === 'no-tokens') setTestMsg('Este dispositivo aún no está registrado. Vuelve a tocar "Activar notificaciones" y reintenta.')
+      else setTestMsg('No se pudo entregar. Revisa los permisos del sitio en el navegador.')
+    } catch (e: any) {
+      setTestMsg(e?.message || 'Error al enviar')
+    } finally {
+      setTesting(false)
+    }
   }
 
   return (
@@ -68,6 +90,15 @@ export function Reminders() {
         {perm === 'denied' && (
           <div className="flex items-center gap-2 text-xs text-muted bg-surface rounded-xl p-3 mb-4">
             <BellOff size={15} /> Las notificaciones están bloqueadas en el navegador. Actívalas en los ajustes del sitio para recibir alertas.
+          </div>
+        )}
+        {cloud && user && canNotify() && perm !== 'denied' && (
+          <div className="mb-4">
+            <button onClick={sendTest} disabled={testing} className="w-full flex items-center justify-center gap-2 bg-surface border border-line rounded-xl py-2.5 text-sm font-medium text-muted disabled:opacity-50">
+              {testing ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
+              Enviar notificación de prueba
+            </button>
+            {testMsg && <p className="text-xs text-center text-muted mt-2">{testMsg}</p>}
           </div>
         )}
 
@@ -121,6 +152,9 @@ export function Reminders() {
 
 function ReminderModal({ reminder, onClose }: { reminder: Reminder | null; onClose: () => void }) {
   const s = useStore()
+  const { user } = useAuth()
+  const inSharedSpace = !!s.activeSpaceId
+  const [notifyScope, setNotifyScope] = useState<'all' | 'me'>(reminder?.notifyScope ?? 'all')
   const [title, setTitle] = useState(reminder?.title ?? '')
   const [kind, setKind] = useState<ReminderKind>(reminder?.kind ?? 'expense')
   const [amount, setAmount] = useState(reminder?.amount ? String(reminder.amount) : '')
@@ -153,6 +187,9 @@ function ReminderModal({ reminder, onClose }: { reminder: Reminder | null; onClo
       notify,
       active,
       lastFired: reminder?.lastFired ?? null,
+      tz: reminder?.tz || deviceTimeZone(),
+      notifyScope: inSharedSpace ? notifyScope : 'all',
+      createdBy: reminder?.createdBy || user?.uid || '',
     }
     if (reminder) s.updateReminder(reminder.id, data)
     else s.addReminder(data)
@@ -252,6 +289,19 @@ function ReminderModal({ reminder, onClose }: { reminder: Reminder | null; onClo
       {freq === 'everyN' && (
         <Field label="Cada cuántos días">
           <input className={inputCls} inputMode="numeric" value={interval} onChange={(e) => setIntervalDays(e.target.value.replace(/[^0-9]/g, ''))} />
+        </Field>
+      )}
+
+      {inSharedSpace && (
+        <Field label="Avisar a">
+          <Segmented<'all' | 'me'>
+            value={notifyScope}
+            onChange={setNotifyScope}
+            options={[
+              { value: 'all', label: 'Todos' },
+              { value: 'me', label: 'Solo a mí' },
+            ]}
+          />
         </Field>
       )}
 

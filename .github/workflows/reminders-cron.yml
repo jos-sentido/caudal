@@ -14,5 +14,6 @@ jobs:
     steps:
       - name: Enviar recordatorios vencidos
         run: |
-          curl -fsS -m 60 -X POST "https://caudal-omega.vercel.app/api/cron" \
+          curl -fsS -m 120 --retry 3 --retry-delay 10 --retry-all-errors \
+            -X POST "https://caudal-omega.vercel.app/api/cron" \
             -H "x-cron-secret: ${{ secrets.CRON_SECRET }}"

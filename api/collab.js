@@ -6,6 +6,7 @@
 import { initializeApp, getApps, cert } from 'firebase-admin/app'
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
 import { getAuth } from 'firebase-admin/auth'
+import { getMessaging } from 'firebase-admin/messaging'
 
 function ensureApp() {
   if (!getApps().length) {
@@ -149,6 +150,27 @@ export default async function handler(req, res) {
         ),
       )
       return res.status(200).json({ ok: true, name: nm })
+    }
+
+    // Enviar una notificación push de prueba al propio usuario (verifica token + permiso).
+    if (action === 'testPush') {
+      const tokSnap = await db.collection(`users/${uid}/fcmTokens`).get()
+      const tokens = tokSnap.docs.map((d) => d.get('token')).filter(Boolean)
+      if (!tokens.length) return res.status(200).json({ ok: false, reason: 'no-tokens', tokens: 0 })
+      const resp = await getMessaging().sendEachForMulticast({
+        tokens,
+        data: { title: 'Caudal', body: 'Notificación de prueba ✓', url: '/recordatorios', tag: 'test' },
+        webpush: { headers: { Urgency: 'high' }, fcmOptions: { link: '/recordatorios' } },
+      })
+      resp.responses.forEach((rr, i) => {
+        if (!rr.success) {
+          const code = (rr.error && rr.error.code) || ''
+          if (code.includes('not-registered') || code.includes('invalid-argument') || code.includes('invalid-registration-token')) {
+            db.doc(`users/${uid}/fcmTokens/${tokens[i]}`).delete().catch(() => {})
+          }
+        }
+      })
+      return res.status(200).json({ ok: resp.successCount > 0, sent: resp.successCount, tokens: tokens.length })
     }
 
     return res.status(400).json({ error: 'unknown-action' })

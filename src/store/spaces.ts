@@ -44,6 +44,8 @@ export const apiRemoveMember = (spaceId: string, memberUid: string) =>
   call('removeMember', { spaceId, memberUid })
 export const apiRenameSpace = (spaceId: string, name: string) =>
   call<{ name: string }>('renameSpace', { spaceId, name })
+export const apiTestPush = () =>
+  call<{ ok: boolean; sent?: number; tokens?: number; reason?: string }>('testPush')
 
 /** Copia los datos actuales del store al espacio indicado (punto de partida al crearlo). */
 export async function copyCurrentDataToSpace(spaceId: string): Promise<void> {

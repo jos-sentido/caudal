@@ -20,6 +20,9 @@ export interface Reminder {
   notify: boolean
   active: boolean
   lastFired?: string | null // ISO datetime de la última ocurrencia notificada
+  tz?: string // zona horaria IANA del dispositivo al crearlo (para calcular la hora correcta en el servidor)
+  notifyScope?: 'all' | 'me' // en espacios compartidos: avisar a todos los miembros o solo a quien lo creó
+  createdBy?: string // uid de quien lo creó (para 'me' y para mostrar autoría)
 }
 
 export interface Account {

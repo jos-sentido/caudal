@@ -66,34 +66,34 @@ export function Dashboard() {
           </Link>
         </div>
 
-        <div className="text-center mt-3">
-          <div className="text-sm text-muted">Balance de cuentas</div>
+        <div className="bg-soft text-ink rounded-3xl px-5 py-5 text-center mt-3 shadow-lg shadow-black/20">
+          <div className="text-sm font-medium opacity-70">Balance de cuentas</div>
           <div className="flex items-center justify-center gap-2 mt-0.5">
             <span className="text-4xl font-bold tracking-tight">{money(totalBal, { hide })}</span>
           </div>
-          <button onClick={s.toggleHide} className="text-muted mt-1.5 inline-grid place-items-center">
+          <button onClick={s.toggleHide} className="opacity-70 mt-1.5 inline-grid place-items-center">
             {hide ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
 
         {/* Ingresos / Gastos */}
         <div className="grid grid-cols-2 gap-3 mt-4">
-          <Link to="/movimientos?tipo=income" className="bg-surface rounded-2xl p-3 flex items-center gap-2.5 active:opacity-70 transition-opacity">
-            <div className="w-9 h-9 rounded-full bg-income/15 grid place-items-center text-income shrink-0">
+          <Link to="/movimientos?tipo=income" className="bg-mint text-ink rounded-2xl p-3 flex items-center gap-2.5 active:opacity-70 transition-opacity">
+            <div className="w-9 h-9 rounded-full bg-ink/10 grid place-items-center shrink-0">
               <TrendingUp size={18} />
             </div>
             <div className="min-w-0">
-              <div className="text-xs text-muted leading-tight">Ingresos</div>
-              <div className="font-bold text-income text-[15px] leading-tight truncate">{money(totals.income, { hide })}</div>
+              <div className="text-xs opacity-70 leading-tight">Ingresos</div>
+              <div className="font-bold text-[15px] leading-tight truncate">{money(totals.income, { hide })}</div>
             </div>
           </Link>
-          <Link to="/movimientos?tipo=expense" className="bg-surface rounded-2xl p-3 flex items-center gap-2.5 active:opacity-70 transition-opacity">
-            <div className="w-9 h-9 rounded-full bg-expense/15 grid place-items-center text-expense shrink-0">
+          <Link to="/movimientos?tipo=expense" className="bg-ice text-ink rounded-2xl p-3 flex items-center gap-2.5 active:opacity-70 transition-opacity">
+            <div className="w-9 h-9 rounded-full bg-ink/10 grid place-items-center shrink-0">
               <TrendingDown size={18} />
             </div>
             <div className="min-w-0">
-              <div className="text-xs text-muted leading-tight">Gastos</div>
-              <div className="font-bold text-expense text-[15px] leading-tight truncate">{money(totals.expense, { hide })}</div>
+              <div className="text-xs opacity-70 leading-tight">Gastos</div>
+              <div className="font-bold text-[15px] leading-tight truncate">{money(totals.expense, { hide })}</div>
             </div>
           </Link>
         </div>

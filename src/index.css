@@ -16,6 +16,7 @@
   --color-amber: #ff7036;     /* Orange — acento secundario */
   --color-ice: #bff2f0;       /* Ice — apoyo */
   --color-mint: #cff1d2;      /* Mint — apoyo */
+  --color-soft: #f7f9f7;      /* Soft White — cajas claras */
   --color-muted: #a2bcac;     /* texto secundario (verde grisáceo) */
   --color-faint: #62806e;     /* texto tenue */
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;

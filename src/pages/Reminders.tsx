@@ -79,11 +79,11 @@ export function Reminders() {
 
       <div className="px-4">
         {canNotify() && perm !== 'granted' && (
-          <button onClick={askPermission} className="w-full flex items-center gap-3 bg-brand/12 border border-brand/30 rounded-2xl p-3.5 mb-4 text-left">
-            <span className="w-9 h-9 rounded-full bg-brand grid place-items-center text-ink shrink-0"><BellRing size={18} /></span>
+          <button onClick={askPermission} className="w-full flex items-center gap-3 bg-amber text-ink rounded-2xl p-3.5 mb-4 text-left">
+            <span className="w-9 h-9 rounded-full bg-ink/10 grid place-items-center shrink-0"><BellRing size={18} /></span>
             <span className="flex-1">
               <span className="font-semibold block text-sm">Activar notificaciones</span>
-              <span className="text-xs text-muted">Permite que Caudal te avise cuando llegue cada recordatorio.</span>
+              <span className="text-xs opacity-80">Permite que Caudal te avise cuando llegue cada recordatorio.</span>
             </span>
           </button>
         )}

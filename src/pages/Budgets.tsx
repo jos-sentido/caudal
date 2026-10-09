@@ -3,7 +3,7 @@ import { Plus, Wallet2, Trash2 } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { MonthNav } from '../components/MonthNav'
 import { IconBubble, Sheet, Field, inputCls, Btn, EmptyState } from '../components/ui'
-import { money } from '../lib/format'
+import { money, fmtAmountInput, unfmtAmount } from '../lib/format'
 import { budgetProgress } from '../store/selectors'
 
 type BudgetEdit = 'new' | { categoryId: string; amount: number }
@@ -161,7 +161,7 @@ function BudgetModal({ editing, onClose }: { editing: BudgetEdit; onClose: () =>
         </div>
       )}
       <Field label="Límite mensual">
-        <input className={inputCls} inputMode="decimal" autoFocus value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ''))} placeholder="0.00" />
+        <input className={inputCls} inputMode="decimal" autoFocus value={fmtAmountInput(amount)} onChange={(e) => setAmount(unfmtAmount(e.target.value).replace(/[^0-9.]/g, ''))} placeholder="0.00" />
       </Field>
       <div className="pb-2" />
     </Sheet>

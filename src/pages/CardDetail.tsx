@@ -6,7 +6,7 @@ import { Sheet, Field, inputCls, Btn, TopBar } from '../components/ui'
 import { CardModal } from '../components/CardModal'
 import { TxRow } from '../components/TxRow'
 import { useTxModal } from '../components/AppShell'
-import { money, todayISO } from '../lib/format'
+import { money, todayISO, fmtAmountInput, unfmtAmount } from '../lib/format'
 import { cardUsed } from '../store/selectors'
 
 export function CardDetail() {
@@ -144,8 +144,8 @@ function PayCardModal({ cardId, suggested, onClose }: { cardId: string; suggeste
           <input
             autoFocus
             inputMode="decimal"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ''))}
+            value={fmtAmountInput(amount)}
+            onChange={(e) => setAmount(unfmtAmount(e.target.value).replace(/[^0-9.]/g, ''))}
             placeholder="0.00"
             className="bg-transparent text-3xl font-bold text-center outline-none w-52 text-brand-soft placeholder:text-line"
           />

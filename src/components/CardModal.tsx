@@ -3,6 +3,7 @@ import { Trash2 } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { IconBubble, Sheet, Field, inputCls, Btn } from './ui'
 import { ColorPicker } from './pickers'
+import { fmtAmountInput, unfmtAmount } from '../lib/format'
 import type { CreditCard } from '../lib/types'
 
 export function CardModal({
@@ -60,7 +61,7 @@ export function CardModal({
         <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} placeholder="Ej. BBVA Oro" />
       </Field>
       <Field label="Límite de crédito">
-        <input className={inputCls} inputMode="decimal" value={limit} onChange={(e) => setLimit(e.target.value.replace(/[^0-9.]/g, ''))} placeholder="0.00" />
+        <input className={inputCls} inputMode="decimal" value={fmtAmountInput(limit)} onChange={(e) => setLimit(unfmtAmount(e.target.value).replace(/[^0-9.]/g, ''))} placeholder="0.00" />
       </Field>
       <div className="flex gap-3">
         <div className="flex-1">

@@ -4,7 +4,7 @@ import { Plus, BellRing, BellOff, Trash2, CalendarClock, Check, Send, Loader2 } 
 import clsx from 'clsx'
 import { useStore } from '../store/useStore'
 import { IconBubble, Sheet, Field, inputCls, Btn, Segmented, EmptyState, TopBar } from '../components/ui'
-import { money, todayISO } from '../lib/format'
+import { money, todayISO, fmtAmountInput, unfmtAmount } from '../lib/format'
 import { nextOccurrence, dueOccurrence, whenLabel, freqDescription, FREQ_LABEL, deviceTimeZone } from '../lib/recurrence'
 import { canNotify, notifPermission, ensurePermission } from '../lib/notify'
 import { registerPush } from '../lib/fcm'
@@ -244,7 +244,7 @@ function ReminderModal({ reminder, onClose }: { reminder: Reminder | null; onClo
       </Field>
 
       <Field label="Monto (opcional)">
-        <input className={inputCls} inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ''))} placeholder="0.00" />
+        <input className={inputCls} inputMode="decimal" value={fmtAmountInput(amount)} onChange={(e) => setAmount(unfmtAmount(e.target.value).replace(/[^0-9.]/g, ''))} placeholder="0.00" />
       </Field>
 
       {(kind === 'expense' || kind === 'income') && (

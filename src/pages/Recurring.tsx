@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Plus, Trash2, Repeat, Play } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { IconBubble, Sheet, Field, inputCls, Btn, Segmented, EmptyState, TopBar } from '../components/ui'
-import { money, toISODate } from '../lib/format'
+import { money, toISODate, fmtAmountInput, unfmtAmount } from '../lib/format'
 import type { Recurring as Rec, TxType, RecurrenceFreq } from '../lib/types'
 
 const FREQ: { value: RecurrenceFreq; label: string }[] = [
@@ -147,7 +147,7 @@ function RecurringModal({ rec, onClose }: { rec: Rec | null; onClose: () => void
       </div>
       <div className="h-4" />
       <Field label="Monto">
-        <input className={inputCls} inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ''))} placeholder="0.00" />
+        <input className={inputCls} inputMode="decimal" value={fmtAmountInput(amount)} onChange={(e) => setAmount(unfmtAmount(e.target.value).replace(/[^0-9.]/g, ''))} placeholder="0.00" />
       </Field>
       <Field label="Descripción">
         <input className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Ej. Renta, Nómina…" />

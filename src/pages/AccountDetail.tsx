@@ -6,7 +6,7 @@ import { IconBubble, Sheet, Field, Btn, Segmented, TopBar } from '../components/
 import { AccountModal, ACCOUNT_KINDS } from '../components/AccountModal'
 import { TxRow } from '../components/TxRow'
 import { useTxModal } from '../components/AppShell'
-import { money, todayISO } from '../lib/format'
+import { money, todayISO, fmtAmountInput, unfmtAmount } from '../lib/format'
 import { accountCurrent, accountProjected } from '../store/selectors'
 
 export function AccountDetail() {
@@ -180,8 +180,8 @@ function AdjustBalanceModal({
           <input
             autoFocus
             inputMode="decimal"
-            value={value}
-            onChange={(e) => setValue(e.target.value.replace(/[^0-9.-]/g, ''))}
+            value={fmtAmountInput(value, true)}
+            onChange={(e) => setValue(unfmtAmount(e.target.value).replace(/[^0-9.-]/g, ''))}
             className="bg-transparent text-3xl font-bold text-center outline-none w-52 text-brand-soft placeholder:text-line"
           />
         </div>

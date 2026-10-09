@@ -3,6 +3,7 @@ import { Trash2 } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { IconBubble, Sheet, Field, inputCls, Btn } from './ui'
 import { IconPicker, ColorPicker } from './pickers'
+import { fmtAmountInput, unfmtAmount } from '../lib/format'
 import type { Account } from '../lib/types'
 
 export const ACCOUNT_KINDS: { value: Account['kind']; label: string }[] = [
@@ -66,7 +67,7 @@ export function AccountModal({
         </select>
       </Field>
       <Field label="Saldo inicial">
-        <input className={inputCls} inputMode="decimal" value={initial} onChange={(e) => setInitial(e.target.value.replace(/[^0-9.-]/g, ''))} />
+        <input className={inputCls} inputMode="decimal" value={fmtAmountInput(initial, true)} onChange={(e) => setInitial(unfmtAmount(e.target.value).replace(/[^0-9.-]/g, ''))} />
       </Field>
       <Field label="Color"><ColorPicker value={color} onChange={setColor} /></Field>
       <Field label="Ícono"><IconPicker value={icon} onChange={setIcon} /></Field>

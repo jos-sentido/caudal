@@ -3,7 +3,7 @@ import { Check, Trash2, ArrowRight } from 'lucide-react'
 import clsx from 'clsx'
 import { useStore } from '../store/useStore'
 import type { Transaction, TxType } from '../lib/types'
-import { todayISO } from '../lib/format'
+import { todayISO, fmtAmountInput, unfmtAmount } from '../lib/format'
 import { Sheet, Field, inputCls, Segmented, Btn, IconBubble } from './ui'
 
 export interface TxDraft {
@@ -126,8 +126,8 @@ export function TransactionModal({
             <input
               autoFocus={!editing}
               inputMode="decimal"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ''))}
+              value={fmtAmountInput(amount)}
+              onChange={(e) => setAmount(unfmtAmount(e.target.value).replace(/[^0-9.]/g, ''))}
               placeholder="0.00"
               className="bg-transparent text-4xl font-bold text-center outline-none w-52 placeholder:text-line"
               style={{ color: accentColor }}

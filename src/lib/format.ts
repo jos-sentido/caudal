@@ -1,5 +1,23 @@
 const LOCALE = 'es-MX'
 
+/** Formatea lo que el usuario teclea agrupando miles: "30000.5" → "30,000.5". */
+export function fmtAmountInput(raw: string, allowNeg = false): string {
+  let s = String(raw ?? '')
+  const neg = allowNeg && s.trim().startsWith('-')
+  s = s.replace(/[^0-9.]/g, '')
+  if (!s) return neg ? '-' : ''
+  const i = s.indexOf('.')
+  const intPart = (i === -1 ? s : s.slice(0, i)).replace(/^0+(?=\d)/, '')
+  const grouped = (intPart || '0').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const dec = i === -1 ? '' : '.' + s.slice(i + 1).replace(/\./g, '')
+  return (neg ? '-' : '') + grouped + dec
+}
+
+/** Quita las comas de agrupación para volver al número crudo. */
+export function unfmtAmount(v: string): string {
+  return v.replace(/,/g, '')
+}
+
 export function money(n: number, opts: { sign?: boolean; hide?: boolean } = {}) {
   if (opts.hide) return '••••••'
   const abs = Math.abs(n)

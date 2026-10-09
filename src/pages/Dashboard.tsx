@@ -97,6 +97,14 @@ export function Dashboard() {
             </div>
           </Link>
         </div>
+
+        {/* Balance del mes */}
+        <div className="mt-3 flex items-center justify-between bg-surface border border-line rounded-2xl px-4 py-3">
+          <span className="text-sm text-muted">Balance del mes</span>
+          <span className="font-bold text-lg" style={{ color: totals.balance < 0 ? 'var(--color-expense)' : 'var(--color-income)' }}>
+            {money(totals.balance, { sign: totals.balance > 0, hide })}
+          </span>
+        </div>
       </div>
 
       <div className="px-4 mt-6 space-y-6">

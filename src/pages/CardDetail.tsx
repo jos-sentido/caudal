@@ -66,17 +66,17 @@ export function CardDetail() {
         </div>
 
         {/* Estado / fechas */}
-        <div className="bg-surface rounded-2xl border border-line p-4 mt-3 grid grid-cols-3 gap-3 text-center">
+        <div className="bg-brand text-ink rounded-2xl p-4 mt-3 grid grid-cols-3 gap-3 text-center">
           <div>
-            <div className="text-xs text-muted">Día de corte</div>
+            <div className="text-xs opacity-70">Día de corte</div>
             <div className="font-bold mt-0.5">{card.closingDay}</div>
           </div>
-          <div className="border-x border-line/60">
-            <div className="text-xs text-muted">Día de pago</div>
+          <div className="border-x border-ink/15">
+            <div className="text-xs opacity-70">Día de pago</div>
             <div className="font-bold mt-0.5">{card.dueDay}</div>
           </div>
           <div>
-            <div className="text-xs text-muted">Cargos</div>
+            <div className="text-xs opacity-70">Cargos</div>
             <div className="font-bold mt-0.5">{charges.length}</div>
           </div>
         </div>

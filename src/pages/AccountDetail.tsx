@@ -60,10 +60,10 @@ export function AccountDetail() {
 
       <div className="px-4">
         {/* Encabezado saldo */}
-        <div className="bg-surface rounded-2xl border border-line p-5 text-center">
+        <div className="bg-soft text-ink rounded-2xl p-5 text-center">
           <div className="flex justify-center mb-2"><IconBubble color={acc.color} icon={acc.icon} size={52} iconSize={24} /></div>
           <div className="font-semibold text-lg">{acc.name}</div>
-          <div className="text-xs text-muted mb-3">Saldo actual</div>
+          <div className="text-xs opacity-60 mb-3">Saldo actual</div>
           <div className="text-3xl font-bold" style={{ color: cur < 0 ? 'var(--color-expense)' : 'var(--color-income)' }}>
             {money(cur, { hide })}
           </div>

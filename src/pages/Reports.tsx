@@ -41,15 +41,15 @@ export function Reports() {
           <div className="h-40">
             <ResponsiveContainer>
               <BarChart data={bars} barCategoryGap={10} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
-                <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: '#9298a3', fontSize: 11 }} />
+                <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: '#a2bcac', fontSize: 11 }} />
                 <Tooltip
                   cursor={{ fill: 'rgba(255,255,255,0.04)' }}
-                  contentStyle={{ background: '#24242d', border: '1px solid #2e2e38', borderRadius: 12, fontSize: 12 }}
+                  contentStyle={{ background: '#205a3d', border: '1px solid #2c6a4c', borderRadius: 12, fontSize: 12, color: '#f7f9f7' }}
                   formatter={((v: number, n: string) => [money(v), n === 'income' ? 'Ingresos' : 'Gastos']) as any}
-                  labelStyle={{ color: '#9298a3' }}
+                  labelStyle={{ color: '#a2bcac' }}
                 />
-                <Bar dataKey="income" radius={[4, 4, 0, 0]} fill="#37c978" />
-                <Bar dataKey="expense" radius={[4, 4, 0, 0]} fill="#f0574f" />
+                <Bar dataKey="income" radius={[4, 4, 0, 0]} fill="#46d983" />
+                <Bar dataKey="expense" radius={[4, 4, 0, 0]} fill="#ff5a4d" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -61,9 +61,9 @@ export function Reports() {
 
         {/* Resumen del mes */}
         <div className="grid grid-cols-3 gap-2 mt-3">
-          <Stat label="Ingresos" value={money(cur.income, { hide })} color="var(--color-income)" />
-          <Stat label="Gastos" value={money(cur.expense, { hide })} color="var(--color-expense)" />
-          <Stat label="Balance" value={money(cur.balance, { hide })} color={cur.balance >= 0 ? 'var(--color-income)' : 'var(--color-expense)'} />
+          <Stat label="Ingresos" value={money(cur.income, { hide })} bg="bg-mint" />
+          <Stat label="Gastos" value={money(cur.expense, { hide })} bg="bg-ice" />
+          <Stat label="Balance" value={money(cur.balance, { hide })} bg="bg-brand" />
         </div>
 
         {/* Ranking categorías */}
@@ -105,11 +105,11 @@ function Legend({ color, label }: { color: string; label: string }) {
   )
 }
 
-function Stat({ label, value, color }: { label: string; value: string; color: string }) {
+function Stat({ label, value, bg }: { label: string; value: string; bg: string }) {
   return (
-    <div className="bg-surface rounded-2xl border border-line p-3 text-center">
-      <div className="text-[11px] text-muted">{label}</div>
-      <div className="font-bold text-sm mt-0.5 truncate" style={{ color }}>{value}</div>
+    <div className={`${bg} text-ink rounded-2xl p-3 text-center`}>
+      <div className="text-[11px] opacity-70">{label}</div>
+      <div className="font-bold text-sm mt-0.5 truncate">{value}</div>
     </div>
   )
 }

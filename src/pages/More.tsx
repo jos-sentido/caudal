@@ -73,17 +73,17 @@ export function More() {
   return (
     <div className="pt-4 safe-t">
       {/* Perfil */}
-      <div className="px-4 flex items-center gap-3 mb-5">
+      <div className="mx-3 bg-brand text-ink rounded-2xl p-4 flex items-center gap-3 mb-5">
         {user?.photoURL ? (
           <img src={user.photoURL} alt="" className="w-14 h-14 rounded-full object-cover" referrerPolicy="no-referrer" />
         ) : (
-          <div className="w-14 h-14 rounded-full bg-surface grid place-items-center text-brand-soft">
+          <div className="w-14 h-14 rounded-full bg-ink/10 grid place-items-center text-ink">
             <UserCircle2 size={34} strokeWidth={1.5} />
           </div>
         )}
         <div className="min-w-0">
           <div className="font-bold text-lg truncate">{user?.displayName ?? 'Mi cuenta'}</div>
-          <div className="text-sm text-muted truncate">
+          <div className="text-sm opacity-70 truncate">
             {user?.email ?? `Balance total ${money(bal, { hide: s.settings.hideBalances })}`}
           </div>
         </div>

@@ -44,15 +44,15 @@ export function Budgets() {
           />
         ) : (
           <>
-            <div className="bg-surface rounded-2xl border border-line p-4 mb-4">
+            <div className="bg-soft text-ink rounded-2xl p-4 mb-4">
               <div className="flex justify-between items-baseline mb-2">
-                <span className="text-sm text-muted">Total gastado</span>
-                <span className="font-bold">{money(totalSpent, { hide })} <span className="text-muted font-normal">/ {money(totalBudget, { hide })}</span></span>
+                <span className="text-sm opacity-60">Total gastado</span>
+                <span className="font-bold">{money(totalSpent, { hide })} <span className="opacity-60 font-normal">/ {money(totalBudget, { hide })}</span></span>
               </div>
-              <div className="h-2.5 bg-surface-2 rounded-full overflow-hidden">
-                <div className="h-full rounded-full" style={{ width: `${totalPct}%`, background: totalPct >= 100 ? 'var(--color-expense)' : 'var(--color-brand)' }} />
+              <div className="h-2.5 bg-ink/10 rounded-full overflow-hidden">
+                <div className="h-full rounded-full" style={{ width: `${totalPct}%`, background: totalPct >= 100 ? 'var(--color-expense)' : 'var(--color-ink)' }} />
               </div>
-              <div className="text-xs text-muted mt-2">Disponible {money(Math.max(totalBudget - totalSpent, 0), { hide })}</div>
+              <div className="text-xs opacity-60 mt-2">Disponible {money(Math.max(totalBudget - totalSpent, 0), { hide })}</div>
             </div>
 
             <div className="space-y-3">

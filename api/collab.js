@@ -123,11 +123,59 @@ export default async function handler(req, res) {
       const spaceId = String(body.spaceId || '')
       const infoRef = db.doc(`spaces/${spaceId}/meta/info`)
       const infoSnap = await infoRef.get()
-      if (infoSnap.exists) {
-        await infoRef.update({ [`members.${uid}`]: FieldValue.delete() })
+      if (!infoSnap.exists) {
+        await db.doc(`users/${uid}/meta/spaces`).update({ [spaceId]: FieldValue.delete() }).catch(() => {})
+        return res.status(200).json({ ok: true })
       }
+      const info = infoSnap.data()
+      const members = info.members || {}
+      const remaining = Object.keys(members).filter((m) => m !== uid)
+
+      // Último miembro: elimina el espacio completo para no dejar datos huérfanos.
+      if (remaining.length === 0) {
+        await db.recursiveDelete(db.doc(`spaces/${spaceId}`))
+        await db.doc(`users/${uid}/meta/spaces`).update({ [spaceId]: FieldValue.delete() }).catch(() => {})
+        return res.status(200).json({ ok: true, deleted: true })
+      }
+
+      const updates = { [`members.${uid}`]: FieldValue.delete() }
+      // Si el que sale es el creador, traspasa la propiedad al miembro más antiguo.
+      if (info.createdBy === uid) {
+        let heir = remaining[0]
+        let best = members[heir] && members[heir].since != null ? members[heir].since : Infinity
+        for (const m of remaining) {
+          const s = members[m] && members[m].since != null ? members[m].since : Infinity
+          if (s < best) { best = s; heir = m }
+        }
+        updates.createdBy = heir
+        updates[`members.${heir}.role`] = 'owner'
+      }
+      await infoRef.update(updates)
       await db.doc(`users/${uid}/meta/spaces`).update({ [spaceId]: FieldValue.delete() }).catch(() => {})
+      if (updates.createdBy) {
+        await db.doc(`users/${updates.createdBy}/meta/spaces`).set({ [spaceId]: { role: 'owner' } }, { merge: true }).catch(() => {})
+      }
       return res.status(200).json({ ok: true })
+    }
+
+    // Eliminar un espacio completo (solo el creador). Borra todos sus datos.
+    if (action === 'deleteSpace') {
+      const spaceId = String(body.spaceId || '')
+      const infoRef = db.doc(`spaces/${spaceId}/meta/info`)
+      const infoSnap = await infoRef.get()
+      if (!infoSnap.exists) {
+        await db.doc(`users/${uid}/meta/spaces`).update({ [spaceId]: FieldValue.delete() }).catch(() => {})
+        return res.status(200).json({ ok: true })
+      }
+      const info = infoSnap.data()
+      if (!info.members || !info.members[uid]) return res.status(403).json({ error: 'not-member' })
+      if (info.createdBy !== uid) return res.status(403).json({ error: 'not-owner' })
+      const members = Object.keys(info.members || {})
+      await db.recursiveDelete(db.doc(`spaces/${spaceId}`))
+      await Promise.all(members.map((m) =>
+        db.doc(`users/${m}/meta/spaces`).update({ [spaceId]: FieldValue.delete() }).catch(() => {}),
+      ))
+      return res.status(200).json({ ok: true, deleted: true })
     }
 
     // Expulsar a un miembro (solo el creador del espacio).

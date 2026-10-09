@@ -42,6 +42,7 @@ export const apiCreateInvite = (spaceId: string) =>
 export const apiAcceptInvite = (code: string) =>
   call<{ spaceId: string; name: string }>('acceptInvite', { code })
 export const apiLeaveSpace = (spaceId: string) => call('leaveSpace', { spaceId })
+export const apiDeleteSpace = (spaceId: string) => call('deleteSpace', { spaceId })
 export const apiRemoveMember = (spaceId: string, memberUid: string) =>
   call('removeMember', { spaceId, memberUid })
 export const apiRenameSpace = (spaceId: string, name: string) =>

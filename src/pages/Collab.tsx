@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Users, UserPlus, Plus, Check, Copy, Share2, LogOut, UserMinus, Crown, Home, Loader2, Link2,
+  Users, UserPlus, Plus, Check, Copy, Share2, LogOut, UserMinus, Crown, Home, Loader2, Link2, Trash2,
 } from 'lucide-react'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
@@ -9,7 +9,7 @@ import { useStore } from '../store/useStore'
 import { useAuth } from '../components/AuthGate'
 import { setActiveSpace } from '../store/sync'
 import {
-  apiCreateSpace, apiCreateInvite, apiAcceptInvite, apiLeaveSpace, apiRemoveMember, copyCurrentDataToSpace,
+  apiCreateSpace, apiCreateInvite, apiAcceptInvite, apiLeaveSpace, apiDeleteSpace, apiRemoveMember, copyCurrentDataToSpace,
 } from '../store/spaces'
 import type { SpaceInfo } from '../lib/types'
 import { TopBar, Btn, inputCls } from '../components/ui'
@@ -120,14 +120,35 @@ export function Collab() {
 
             {inviteCode && <InviteCard code={inviteCode} />}
 
-            <button
-              onClick={() => run('leave', async () => { await apiLeaveSpace(activeSpaceId); await setActiveSpace('') })}
-              disabled={busy === 'leave'}
-              className="w-full flex items-center justify-center gap-2 text-expense text-sm font-medium py-2 disabled:opacity-40"
-            >
-              {busy === 'leave' ? <Loader2 size={16} className="animate-spin" /> : <LogOut size={16} />}
-              Salir del espacio
-            </button>
+            {Object.keys(info.members || {}).length <= 1 ? (
+              <button
+                onClick={() => {
+                  if (!confirm(`¿Eliminar el espacio "${info.name}" y todos sus datos? Esto no se puede deshacer. Tus datos personales no se tocan.`)) return
+                  run('leave', async () => { await apiDeleteSpace(activeSpaceId); await setActiveSpace('') })
+                }}
+                disabled={busy === 'leave'}
+                className="w-full flex items-center justify-center gap-2 text-expense text-sm font-medium py-2 disabled:opacity-40"
+              >
+                {busy === 'leave' ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                Eliminar espacio
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  const isOwner = info.createdBy === user.uid
+                  const msg = isOwner
+                    ? '¿Salir del espacio? Dejarás de ver sus datos y la propiedad pasará a otro miembro.'
+                    : '¿Salir del espacio? Dejarás de ver sus datos compartidos.'
+                  if (!confirm(msg)) return
+                  run('leave', async () => { await apiLeaveSpace(activeSpaceId); await setActiveSpace('') })
+                }}
+                disabled={busy === 'leave'}
+                className="w-full flex items-center justify-center gap-2 text-expense text-sm font-medium py-2 disabled:opacity-40"
+              >
+                {busy === 'leave' ? <Loader2 size={16} className="animate-spin" /> : <LogOut size={16} />}
+                Salir del espacio
+              </button>
+            )}
           </div>
         </Section>
       )}

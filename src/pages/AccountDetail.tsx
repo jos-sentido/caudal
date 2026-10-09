@@ -69,7 +69,7 @@ export function AccountDetail() {
           </div>
           <button
             onClick={() => setAdjustOpen(true)}
-            className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand text-white font-semibold text-sm"
+            className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand text-ink font-semibold text-sm"
           >
             <SlidersHorizontal size={16} /> Ajustar saldo
           </button>

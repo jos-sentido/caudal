@@ -28,7 +28,7 @@ export function Accounts() {
         title="Cuentas"
         back={() => nav(-1)}
         right={
-          <button onClick={() => setAddOpen(true)} className="w-9 h-9 grid place-items-center rounded-full bg-brand text-white">
+          <button onClick={() => setAddOpen(true)} className="w-9 h-9 grid place-items-center rounded-full bg-brand text-ink">
             <Plus size={19} />
           </button>
         }

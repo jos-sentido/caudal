@@ -157,7 +157,7 @@ export function Dashboard() {
             <Link to="/tarjetas" className="bg-surface rounded-2xl p-6 flex flex-col items-center text-center">
               <CreditCard size={30} className="text-faint mb-2" />
               <div className="text-sm text-muted">Aún no tienes tarjetas registradas</div>
-              <div className="mt-3 px-5 py-2.5 rounded-full bg-brand text-white text-sm font-semibold">Agregar tarjeta</div>
+              <div className="mt-3 px-5 py-2.5 rounded-full bg-brand text-ink text-sm font-semibold">Agregar tarjeta</div>
             </Link>
           ) : (
             <div className="bg-surface rounded-2xl p-2 divide-y divide-line/60">

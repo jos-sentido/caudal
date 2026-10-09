@@ -1,18 +1,23 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-ink: #0c0a09;
-  --color-ink-2: #16110e;
-  --color-surface: #1e1712;
-  --color-surface-2: #2a201a;
-  --color-line: #3a2c22;
-  --color-brand: #f2731d;
-  --color-brand-soft: #ff9d52;
-  --color-income: #3fbf6f;
-  --color-expense: #ef4d43;
-  --color-amber: #f5a623;
-  --color-muted: #a89c92;
-  --color-faint: #766a60;
+  /* Tema "Signal Lime": Move Green (#0F3B27) es el color dominante (fondo/base);
+     encima, los acentos con peso proporcional: lima fuerte, soft white en texto,
+     naranja escaso, ice/mint mínimos. */
+  --color-ink: #0f3b27;       /* Move Green — fondo principal de la app */
+  --color-ink-2: #0b2e1e;     /* elevado/profundo: barra inferior */
+  --color-surface: #16482f;   /* tarjetas (ligeramente elevadas sobre el fondo) */
+  --color-surface-2: #205a3d; /* inputs, segmentados activos, círculos de ícono */
+  --color-line: #2c6a4c;      /* bordes / divisores */
+  --color-brand: #92ff5f;     /* Signal Lime — acento principal (texto oscuro encima) */
+  --color-brand-soft: #b4ff93;/* lima suave para texto/íconos de acento sobre oscuro */
+  --color-income: #46d983;    /* ingreso (verde) */
+  --color-expense: #ff5a4d;   /* gasto (rojo) */
+  --color-amber: #ff7036;     /* Orange — acento secundario */
+  --color-ice: #bff2f0;       /* Ice — apoyo */
+  --color-mint: #cff1d2;      /* Mint — apoyo */
+  --color-muted: #a2bcac;     /* texto secundario (verde grisáceo) */
+  --color-faint: #62806e;     /* texto tenue */
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -40,7 +45,7 @@
   body {
     margin: 0;
     background: var(--color-ink);
-    color: #f4f4f6;
+    color: #f7f9f7;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     overscroll-behavior-y: none;

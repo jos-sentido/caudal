@@ -70,7 +70,7 @@ function MonthPicker({ year, month, onPick }: { year: number; month: number; onP
               onClick={() => onPick(y, m)}
               className={clsx(
                 'py-3 rounded-xl text-sm font-semibold transition-colors',
-                active ? 'bg-brand text-white' : isNow ? 'bg-surface-2 text-brand-soft' : 'bg-surface text-muted hover:text-white',
+                active ? 'bg-brand text-ink' : isNow ? 'bg-surface-2 text-brand-soft' : 'bg-surface text-muted hover:text-white',
               )}
             >
               {monthShort(m)}

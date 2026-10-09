@@ -142,7 +142,7 @@ export function Btn({
   disabled?: boolean
 }) {
   const styles = {
-    primary: 'bg-brand text-white hover:brightness-110',
+    primary: 'bg-brand text-ink hover:brightness-110',
     soft: 'bg-surface-2 text-white hover:bg-line',
     ghost: 'bg-transparent text-muted hover:text-white',
     danger: 'bg-expense/15 text-expense hover:bg-expense/25',

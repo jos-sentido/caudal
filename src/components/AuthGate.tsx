@@ -91,8 +91,8 @@ function Login({ onGoogle, busy, error }: { onGoogle: () => void; busy: boolean;
 function Logo() {
   return (
     <svg width="40" height="40" viewBox="0 0 64 64" fill="none">
-      <path d="M14 42c6-20 30-20 36 0" stroke="white" strokeWidth="6" strokeLinecap="round" />
-      <circle cx="32" cy="24" r="5" fill="#37c978" />
+      <path d="M14 42c6-20 30-20 36 0" stroke="#0f3b27" strokeWidth="6" strokeLinecap="round" />
+      <circle cx="32" cy="24" r="5" fill="#ff7036" />
     </svg>
   )
 }

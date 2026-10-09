@@ -71,7 +71,7 @@ export function Reminders() {
         title="Recordatorios"
         back={() => nav(-1)}
         right={
-          <button onClick={() => setEdit('new')} className="w-9 h-9 grid place-items-center rounded-full bg-brand text-white">
+          <button onClick={() => setEdit('new')} className="w-9 h-9 grid place-items-center rounded-full bg-brand text-ink">
             <Plus size={19} />
           </button>
         }
@@ -80,7 +80,7 @@ export function Reminders() {
       <div className="px-4">
         {canNotify() && perm !== 'granted' && (
           <button onClick={askPermission} className="w-full flex items-center gap-3 bg-brand/12 border border-brand/30 rounded-2xl p-3.5 mb-4 text-left">
-            <span className="w-9 h-9 rounded-full bg-brand grid place-items-center text-white shrink-0"><BellRing size={18} /></span>
+            <span className="w-9 h-9 rounded-full bg-brand grid place-items-center text-ink shrink-0"><BellRing size={18} /></span>
             <span className="flex-1">
               <span className="font-semibold block text-sm">Activar notificaciones</span>
               <span className="text-xs text-muted">Permite que Caudal te avise cuando llegue cada recordatorio.</span>

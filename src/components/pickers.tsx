@@ -28,7 +28,7 @@ export function IconPicker({ value, onChange }: { value: string; onChange: (i: s
           onClick={() => onChange(k)}
           className={clsx(
             'aspect-square rounded-xl grid place-items-center transition-colors',
-            value === k ? 'bg-brand text-white' : 'bg-surface text-muted hover:text-white',
+            value === k ? 'bg-brand text-ink' : 'bg-surface text-muted hover:text-white',
           )}
         >
           <CatIcon name={k} size={18} />

@@ -27,7 +27,7 @@ export function Budgets() {
       <div className="sticky top-0 z-30 bg-ink/95 backdrop-blur-md safe-t">
         <div className="flex items-center px-4 h-14 gap-2">
           <h1 className="text-lg font-bold flex-1">Presupuestos</h1>
-          <button onClick={() => setEditing('new')} className="w-9 h-9 grid place-items-center rounded-full bg-brand text-white">
+          <button onClick={() => setEditing('new')} className="w-9 h-9 grid place-items-center rounded-full bg-brand text-ink">
             <Plus size={19} />
           </button>
         </div>

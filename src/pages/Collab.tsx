@@ -241,7 +241,7 @@ function SpaceRow({
 }) {
   return (
     <button onClick={onClick} disabled={loading} className="flex items-center gap-3 w-full px-4 py-3.5 disabled:opacity-60">
-      <span className={`w-9 h-9 rounded-full grid place-items-center shrink-0 ${active ? 'bg-brand text-white' : 'bg-surface-2 text-muted'}`}>{icon}</span>
+      <span className={`w-9 h-9 rounded-full grid place-items-center shrink-0 ${active ? 'bg-brand text-ink' : 'bg-surface-2 text-muted'}`}>{icon}</span>
       <span className="flex-1 text-left min-w-0">
         <span className="font-medium block truncate">{name}</span>
         <span className="text-xs text-muted">{sub}</span>

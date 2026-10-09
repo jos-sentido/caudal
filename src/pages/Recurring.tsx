@@ -42,7 +42,7 @@ export function Recurring() {
         title="Recurrentes"
         back={() => nav(-1)}
         right={
-          <button onClick={() => setEdit('new')} className="w-9 h-9 grid place-items-center rounded-full bg-brand text-white">
+          <button onClick={() => setEdit('new')} className="w-9 h-9 grid place-items-center rounded-full bg-brand text-ink">
             <Plus size={19} />
           </button>
         }

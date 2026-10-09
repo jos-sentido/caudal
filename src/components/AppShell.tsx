@@ -70,7 +70,7 @@ export function AppShell() {
             <div className="grid grid-cols-2 gap-3">
               <QuickAction color="var(--color-expense)" icon={<TrendingDown size={22} />} label="Gasto" onClick={() => quick('expense')} />
               <QuickAction color="var(--color-income)" icon={<TrendingUp size={22} />} label="Ingreso" onClick={() => quick('income')} />
-              <QuickAction color="var(--color-brand)" icon={<ArrowLeftRight size={22} />} label="Transferencia" onClick={() => quick('transfer')} />
+              <QuickAction color="var(--color-amber)" icon={<ArrowLeftRight size={22} />} label="Transferencia" onClick={() => quick('transfer')} />
               <QuickAction color="#3ba6ff" icon={<CreditCard size={22} />} label="Tarjeta" onClick={() => { setFabOpen(false); navigate('/tarjetas') }} />
             </div>
           </div>
@@ -88,7 +88,7 @@ export function AppShell() {
                 onClick={() => setFabOpen((v) => !v)}
                 className="absolute left-1/2 -translate-x-1/2 -top-7 w-14 h-14 rounded-full bg-brand grid place-items-center shadow-lg shadow-brand/40 transition-transform active:scale-95"
               >
-                {fabOpen ? <X size={26} className="text-white" /> : <Plus size={26} className="text-white" />}
+                {fabOpen ? <X size={26} className="text-ink" /> : <Plus size={26} className="text-ink" />}
               </button>
             </div>
             <Tab to="/presupuestos" icon={<Wallet2 size={21} />} label="Presup." />

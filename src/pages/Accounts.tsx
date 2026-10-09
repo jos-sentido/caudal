@@ -36,13 +36,13 @@ export function Accounts() {
 
       <div className="px-4">
         {s.accounts.length > 0 && (
-          <div className="flex bg-surface rounded-2xl border border-line divide-x divide-line/60 mb-4">
+          <div className="flex bg-brand text-ink rounded-2xl divide-x divide-ink/15 mb-4">
             <div className="flex-1 px-4 py-3">
-              <div className="text-xs text-muted">Balance actual</div>
-              <div className="font-bold text-income">{money(totalCurrent, { hide })}</div>
+              <div className="text-xs opacity-70">Balance actual</div>
+              <div className="font-bold">{money(totalCurrent, { hide })}</div>
             </div>
             <div className="flex-1 px-4 py-3">
-              <div className="text-xs text-muted">Balance proyectado</div>
+              <div className="text-xs opacity-70">Balance proyectado</div>
               <div className="font-bold">{money(totalProjected, { hide })}</div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Plus, CreditCard as CardIcon, ChevronRight } from 'lucide-react'
 import { useStore } from '../store/useStore'
@@ -13,6 +13,12 @@ export function CreditCards() {
   const hide = s.settings.hideBalances
   const [addOpen, setAddOpen] = useState(false)
 
+  const totals = useMemo(() => {
+    const used = s.cards.reduce((a, c) => a + cardUsed(c, s.transactions), 0)
+    const limit = s.cards.reduce((a, c) => a + c.limit, 0)
+    return { used, available: Math.max(limit - used, 0) }
+  }, [s.cards, s.transactions])
+
   return (
     <div>
       <TopBar
@@ -25,6 +31,18 @@ export function CreditCards() {
         }
       />
       <div className="px-4">
+        {s.cards.length > 0 && (
+          <div className="flex bg-amber text-ink rounded-2xl divide-x divide-ink/15 mb-4">
+            <div className="flex-1 px-4 py-3">
+              <div className="text-xs opacity-70">Deuda total</div>
+              <div className="font-bold">{money(totals.used, { hide })}</div>
+            </div>
+            <div className="flex-1 px-4 py-3">
+              <div className="text-xs opacity-70">Disponible</div>
+              <div className="font-bold">{money(totals.available, { hide })}</div>
+            </div>
+          </div>
+        )}
         {s.cards.length === 0 ? (
           <EmptyState
             icon={<CardIcon size={40} />}

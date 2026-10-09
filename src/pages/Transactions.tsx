@@ -63,18 +63,14 @@ export function Transactions() {
         )}
         <MonthNav compact />
         <div className="px-4 pb-2 pt-1">
-          <div className="flex bg-surface rounded-xl border border-line divide-x divide-line/60 mb-2">
+          <div className="flex bg-brand text-ink rounded-xl divide-x divide-ink/15 mb-2">
             <div className="flex-1 px-3 py-2.5">
-              <div className="text-[11px] text-muted">Balance actual</div>
-              <div className="font-bold text-sm" style={{ color: totalBal < 0 ? 'var(--color-expense)' : 'var(--color-income)' }}>
-                {money(totalBal, { hide })}
-              </div>
+              <div className="text-[11px] opacity-70">Balance actual</div>
+              <div className="font-bold text-sm">{money(totalBal, { hide })}</div>
             </div>
             <div className="flex-1 px-3 py-2.5">
-              <div className="text-[11px] text-muted">Balance del mes</div>
-              <div className="font-bold text-sm" style={{ color: totals.balance < 0 ? 'var(--color-expense)' : 'var(--color-income)' }}>
-                {money(totals.balance, { sign: totals.balance > 0, hide })}
-              </div>
+              <div className="text-[11px] opacity-70">Balance del mes</div>
+              <div className="font-bold text-sm">{money(totals.balance, { sign: totals.balance > 0, hide })}</div>
             </div>
           </div>
           <Segmented<Filter>

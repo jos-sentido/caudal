@@ -66,7 +66,7 @@ export function CardDetail() {
         </div>
 
         {/* Estado / fechas */}
-        <div className="bg-surface rounded-2xl p-4 mt-3 grid grid-cols-3 gap-3 text-center">
+        <div className="bg-surface rounded-2xl border border-line p-4 mt-3 grid grid-cols-3 gap-3 text-center">
           <div>
             <div className="text-xs text-muted">Día de corte</div>
             <div className="font-bold mt-0.5">{card.closingDay}</div>
@@ -95,9 +95,9 @@ export function CardDetail() {
         <div className="mt-5">
           <div className="text-sm font-semibold text-muted px-1 mb-1">Movimientos</div>
           {charges.length === 0 ? (
-            <div className="bg-surface rounded-2xl py-8 text-center text-muted text-sm">Sin movimientos en esta tarjeta</div>
+            <div className="bg-surface rounded-2xl border border-line py-8 text-center text-muted text-sm">Sin movimientos en esta tarjeta</div>
           ) : (
-            <div className="bg-surface rounded-2xl px-3 divide-y divide-line/40">
+            <div className="bg-surface rounded-2xl border border-line px-3 divide-y divide-line/40">
               {charges.slice(0, 50).map((t) => (
                 <TxRow key={t.id} t={t} hide={hide} onClick={() => openTx({ id: t.id })} />
               ))}

@@ -36,7 +36,7 @@ export function Accounts() {
 
       <div className="px-4">
         {s.accounts.length > 0 && (
-          <div className="flex bg-surface rounded-2xl divide-x divide-line/60 mb-4">
+          <div className="flex bg-surface rounded-2xl border border-line divide-x divide-line/60 mb-4">
             <div className="flex-1 px-4 py-3">
               <div className="text-xs text-muted">Balance actual</div>
               <div className="font-bold text-income">{money(totalCurrent, { hide })}</div>
@@ -60,7 +60,7 @@ export function Accounts() {
             {s.accounts.map((a) => {
               const cur = accountCurrent(a, s.transactions)
               return (
-                <Link key={a.id} to={`/cuenta/${a.id}`} className="flex items-center gap-3 bg-surface rounded-2xl p-4 active:opacity-70 transition-opacity">
+                <Link key={a.id} to={`/cuenta/${a.id}`} className="flex items-center gap-3 bg-surface rounded-2xl border border-line p-4 active:opacity-70 transition-opacity">
                   <IconBubble color={a.color} icon={a.icon} />
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold truncate">{a.name}</div>

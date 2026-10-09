@@ -36,7 +36,7 @@ export function Reports() {
         <MonthNav compact />
 
         {/* Flujo 6 meses */}
-        <div className="bg-surface rounded-2xl p-4 mt-3">
+        <div className="bg-surface rounded-2xl border border-line p-4 mt-3">
           <div className="text-sm font-semibold mb-3">Ingresos vs Gastos · 6 meses</div>
           <div className="h-40">
             <ResponsiveContainer>
@@ -70,11 +70,11 @@ export function Reports() {
         <div className="mt-5">
           <div className="text-sm font-semibold text-muted px-1 mb-2">Gastos por categoría</div>
           {slices.length === 0 ? (
-            <div className="bg-surface rounded-2xl py-8 text-center text-muted text-sm">Sin gastos este mes</div>
+            <div className="bg-surface rounded-2xl border border-line py-8 text-center text-muted text-sm">Sin gastos este mes</div>
           ) : (
             <div className="space-y-2.5">
               {slices.map((x) => (
-                <div key={x.category.id} className="bg-surface rounded-2xl p-3 flex items-center gap-3">
+                <div key={x.category.id} className="bg-surface rounded-2xl border border-line p-3 flex items-center gap-3">
                   <IconBubble color={x.category.color} icon={x.category.icon} size={38} iconSize={17} />
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between text-sm mb-1.5">
@@ -107,7 +107,7 @@ function Legend({ color, label }: { color: string; label: string }) {
 
 function Stat({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="bg-surface rounded-2xl p-3 text-center">
+    <div className="bg-surface rounded-2xl border border-line p-3 text-center">
       <div className="text-[11px] text-muted">{label}</div>
       <div className="font-bold text-sm mt-0.5 truncate" style={{ color }}>{value}</div>
     </div>

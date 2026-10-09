@@ -63,7 +63,7 @@ export function Transactions() {
         )}
         <MonthNav compact />
         <div className="px-4 pb-2 pt-1">
-          <div className="flex bg-surface rounded-xl divide-x divide-line/60 mb-2">
+          <div className="flex bg-surface rounded-xl border border-line divide-x divide-line/60 mb-2">
             <div className="flex-1 px-3 py-2.5">
               <div className="text-[11px] text-muted">Balance actual</div>
               <div className="font-bold text-sm" style={{ color: totalBal < 0 ? 'var(--color-expense)' : 'var(--color-income)' }}>
@@ -104,7 +104,7 @@ export function Transactions() {
                 <h3 className="text-[13px] font-semibold text-muted">{label}</h3>
                 <span className="text-xs text-faint">{money(dayNet(items), { sign: dayNet(items) > 0, hide })}</span>
               </div>
-              <div className="bg-surface rounded-2xl px-3 divide-y divide-line/40">
+              <div className="bg-surface rounded-2xl border border-line px-3 divide-y divide-line/40">
                 {items.map((t) => (
                   <TxRow key={t.id} t={t} hide={hide} onClick={() => openTx({ id: t.id })} />
                 ))}

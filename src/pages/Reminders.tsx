@@ -88,7 +88,7 @@ export function Reminders() {
           </button>
         )}
         {perm === 'denied' && (
-          <div className="flex items-center gap-2 text-xs text-muted bg-surface rounded-xl p-3 mb-4">
+          <div className="flex items-center gap-2 text-xs text-muted bg-surface rounded-xl border border-line p-3 mb-4">
             <BellOff size={15} /> Las notificaciones están bloqueadas en el navegador. Actívalas en los ajustes del sitio para recibir alertas.
           </div>
         )}
@@ -120,7 +120,7 @@ export function Reminders() {
                   key={r.id}
                   onClick={() => setEdit(r)}
                   className={clsx(
-                    'flex items-center gap-3 w-full text-left bg-surface rounded-2xl p-4 active:opacity-70 transition-opacity',
+                    'flex items-center gap-3 w-full text-left bg-surface rounded-2xl border border-line p-4 active:opacity-70 transition-opacity',
                     overdue && 'ring-1 ring-expense/50',
                   )}
                 >

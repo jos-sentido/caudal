@@ -255,7 +255,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   return (
     <div className="mb-5">
       <div className="text-xs font-semibold text-faint uppercase tracking-wide px-5 mb-1.5">{title}</div>
-      <div className="mx-3 bg-surface rounded-2xl divide-y divide-line/40 overflow-hidden">{children}</div>
+      <div className="mx-3 bg-surface rounded-2xl border border-line divide-y divide-line/40 overflow-hidden">{children}</div>
     </div>
   )
 }

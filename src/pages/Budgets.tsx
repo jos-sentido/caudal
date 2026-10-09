@@ -44,7 +44,7 @@ export function Budgets() {
           />
         ) : (
           <>
-            <div className="bg-surface rounded-2xl p-4 mb-4">
+            <div className="bg-surface rounded-2xl border border-line p-4 mb-4">
               <div className="flex justify-between items-baseline mb-2">
                 <span className="text-sm text-muted">Total gastado</span>
                 <span className="font-bold">{money(totalSpent, { hide })} <span className="text-muted font-normal">/ {money(totalBudget, { hide })}</span></span>
@@ -83,7 +83,7 @@ export function Budgets() {
 function BudgetItem({ b, over, remaining, hide, onEdit }: any) {
   const s = useStore()
   return (
-    <div className="bg-surface rounded-2xl p-4">
+    <div className="bg-surface rounded-2xl border border-line p-4">
       <div className="flex items-center gap-3 mb-2.5">
         <button onClick={onEdit} className="flex items-center gap-3 flex-1 min-w-0 text-left active:opacity-70 transition-opacity">
           <IconBubble color={b.category?.color ?? '#64748b'} icon={b.category?.icon} size={38} iconSize={17} />

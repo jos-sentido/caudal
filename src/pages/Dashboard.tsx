@@ -103,7 +103,7 @@ export function Dashboard() {
         {/* Recordatorios próximos */}
         {reminderInfo.upcoming.length > 0 && (
           <Section title="Recordatorios" to="/recordatorios">
-            <div className="bg-surface rounded-2xl px-3 divide-y divide-line/40">
+            <div className="bg-surface rounded-2xl border border-line px-3 divide-y divide-line/40">
               {reminderInfo.upcoming.map(({ r, next }) => {
                 const cat = s.categories.find((c) => c.id === r.categoryId)
                 const over = reminderInfo.overdueSet.has(r.id)
@@ -128,7 +128,7 @@ export function Dashboard() {
 
         {/* Cuentas */}
         <Section title="Cuentas" to="/cuentas">
-          <div className="bg-surface rounded-2xl p-2 divide-y divide-line/60">
+          <div className="bg-surface rounded-2xl border border-line p-2 divide-y divide-line/60">
             {s.accounts.length === 0 && <AddRow to="/cuentas" label="Agregar cuenta" />}
             {s.accounts.map((a) => (
               <Link key={a.id} to={`/cuenta/${a.id}`} className="flex items-center gap-3 px-2 py-3 active:opacity-70 transition-opacity">
@@ -154,13 +154,13 @@ export function Dashboard() {
         {/* Tarjetas de crédito */}
         <Section title="Tarjetas de crédito" to="/tarjetas">
           {s.cards.length === 0 ? (
-            <Link to="/tarjetas" className="bg-surface rounded-2xl p-6 flex flex-col items-center text-center">
+            <Link to="/tarjetas" className="bg-surface rounded-2xl border border-line p-6 flex flex-col items-center text-center">
               <CreditCard size={30} className="text-faint mb-2" />
               <div className="text-sm text-muted">Aún no tienes tarjetas registradas</div>
               <div className="mt-3 px-5 py-2.5 rounded-full bg-brand text-ink text-sm font-semibold">Agregar tarjeta</div>
             </Link>
           ) : (
-            <div className="bg-surface rounded-2xl p-2 divide-y divide-line/60">
+            <div className="bg-surface rounded-2xl border border-line p-2 divide-y divide-line/60">
               {s.cards.map((c) => {
                 const used = cardUsed(c, s.transactions)
                 const pct = c.limit ? Math.min((used / c.limit) * 100, 100) : 0
@@ -187,7 +187,7 @@ export function Dashboard() {
         {/* Gastos por categoría */}
         {slices.length > 0 && (
           <Section title="Gastos por categoría" to="/reportes">
-            <div className="bg-surface rounded-2xl p-4 flex items-center gap-4">
+            <div className="bg-surface rounded-2xl border border-line p-4 flex items-center gap-4">
               <div className="relative w-28 h-28 shrink-0">
                 <ResponsiveContainer>
                   <PieChart>
@@ -228,7 +228,7 @@ export function Dashboard() {
         {/* Presupuestos */}
         {budgets.length > 0 && (
           <Section title="Presupuestos" to="/presupuestos">
-            <div className="bg-surface rounded-2xl p-4 space-y-3.5">
+            <div className="bg-surface rounded-2xl border border-line p-4 space-y-3.5">
               {budgets.slice(0, 4).map((b) => {
                 const over = b.pct >= 100
                 return (

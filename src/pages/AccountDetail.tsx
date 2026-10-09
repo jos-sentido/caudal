@@ -60,7 +60,7 @@ export function AccountDetail() {
 
       <div className="px-4">
         {/* Encabezado saldo */}
-        <div className="bg-surface rounded-2xl p-5 text-center">
+        <div className="bg-surface rounded-2xl border border-line p-5 text-center">
           <div className="flex justify-center mb-2"><IconBubble color={acc.color} icon={acc.icon} size={52} iconSize={24} /></div>
           <div className="font-semibold text-lg">{acc.name}</div>
           <div className="text-xs text-muted mb-3">Saldo actual</div>
@@ -76,7 +76,7 @@ export function AccountDetail() {
         </div>
 
         {/* Info */}
-        <div className="bg-surface rounded-2xl p-4 mt-3 grid grid-cols-2 gap-y-4 gap-x-3">
+        <div className="bg-surface rounded-2xl border border-line p-4 mt-3 grid grid-cols-2 gap-y-4 gap-x-3">
           <Info label="Tipo" value={ACCOUNT_KINDS.find((k) => k.value === acc.kind)?.label ?? '—'} />
           <Info label="Saldo inicial" value={money(acc.initialBalance, { hide })} />
           <Info label="Saldo proyectado" value={money(proj, { hide })} />
@@ -90,9 +90,9 @@ export function AccountDetail() {
         <div className="mt-5">
           <div className="text-sm font-semibold text-muted px-1 mb-1">Movimientos</div>
           {stats.list.length === 0 ? (
-            <div className="bg-surface rounded-2xl py-8 text-center text-muted text-sm">Sin movimientos en esta cuenta</div>
+            <div className="bg-surface rounded-2xl border border-line py-8 text-center text-muted text-sm">Sin movimientos en esta cuenta</div>
           ) : (
-            <div className="bg-surface rounded-2xl px-3 divide-y divide-line/40">
+            <div className="bg-surface rounded-2xl border border-line px-3 divide-y divide-line/40">
               {stats.list.slice(0, 50).map((t) => (
                 <TxRow key={t.id} t={t} hide={hide} onClick={() => openTx({ id: t.id })} />
               ))}

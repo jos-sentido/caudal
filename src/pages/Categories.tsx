@@ -36,7 +36,7 @@ export function Categories() {
             ]}
           />
         </div>
-        <div className="bg-surface rounded-2xl px-3 divide-y divide-line/40">
+        <div className="bg-surface rounded-2xl border border-line px-3 divide-y divide-line/40">
           {list.map((c) => (
             <button key={c.id} onClick={() => setEdit(c)} className="flex items-center gap-3 w-full py-3 text-left">
               <IconBubble color={c.color} icon={c.icon} size={40} iconSize={18} />

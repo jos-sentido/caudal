@@ -60,7 +60,7 @@ export function Recurring() {
             {s.recurrings.map((r) => {
               const cat = s.categories.find((c) => c.id === r.categoryId)
               return (
-                <div key={r.id} className="bg-surface rounded-2xl p-4 flex items-center gap-3">
+                <div key={r.id} className="bg-surface rounded-2xl border border-line p-4 flex items-center gap-3">
                   <IconBubble color={cat?.color ?? '#64748b'} icon={cat?.icon} />
                   <button onClick={() => setEdit(r)} className="flex-1 min-w-0 text-left">
                     <div className="font-semibold truncate">{r.description}</div>

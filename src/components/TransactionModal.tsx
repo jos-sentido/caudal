@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Check, Trash2, CalendarDays, ArrowRight } from 'lucide-react'
+import { Check, Trash2, ArrowRight } from 'lucide-react'
 import clsx from 'clsx'
 import { useStore } from '../store/useStore'
 import type { Transaction, TxType } from '../lib/types'
@@ -208,10 +208,7 @@ export function TransactionModal({
 
         <div className="flex gap-3">
           <Field label="Fecha">
-            <div className="relative">
-              <input type="date" className={clsx(inputCls, 'pr-10')} value={date} onChange={(e) => setDate(e.target.value)} />
-              <CalendarDays size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
-            </div>
+            <input type="date" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} />
           </Field>
         </div>
 

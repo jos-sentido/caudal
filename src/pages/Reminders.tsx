@@ -272,13 +272,9 @@ function ReminderModal({ reminder, onClose }: { reminder: Reminder | null; onClo
         </Field>
       )}
 
-      <div className="flex gap-3">
-        <div className="flex-1">
-          <Field label="Fecha"><input type="date" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} /></Field>
-        </div>
-        <div className="w-28">
-          <Field label="Hora"><input type="time" className={inputCls} value={time} onChange={(e) => setTime(e.target.value)} /></Field>
-        </div>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Fecha"><input type="date" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} /></Field>
+        <Field label="Hora"><input type="time" className={inputCls} value={time} onChange={(e) => setTime(e.target.value)} /></Field>
       </div>
 
       <Field label="Repetir">

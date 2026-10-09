@@ -17,6 +17,11 @@
 }
 
 @layer base {
+  /* Tema oscuro para los controles nativos (fechas, horas, selects, scrollbars):
+     sin esto, el ícono de calendario/reloj se dibuja negro y no se ve. */
+  :root {
+    color-scheme: dark;
+  }
   * {
     -webkit-tap-highlight-color: transparent;
   }
@@ -24,6 +29,13 @@
   body,
   #root {
     height: 100%;
+  }
+  /* Asegura que el ícono del date/time picker sea visible y tocable. */
+  input[type='date']::-webkit-calendar-picker-indicator,
+  input[type='time']::-webkit-calendar-picker-indicator,
+  input[type='datetime-local']::-webkit-calendar-picker-indicator {
+    opacity: 0.75;
+    cursor: pointer;
   }
   body {
     margin: 0;

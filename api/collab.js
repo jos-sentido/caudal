@@ -5,7 +5,6 @@
 // El cliente autentica cada llamada con el idToken de Firebase en el header Authorization.
 import { initializeApp, getApps, cert } from 'firebase-admin/app'
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
-import { getAuth } from 'firebase-admin/auth'
 import { getMessaging } from 'firebase-admin/messaging'
 
 function ensureApp() {
@@ -13,6 +12,21 @@ function ensureApp() {
     const sa = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}')
     initializeApp({ credential: cert(sa) })
   }
+}
+
+// Verifica el idToken de Firebase vía la API REST (identitytoolkit). Evitamos
+// firebase-admin/auth porque arrastra jwks-rsa -> jose (ESM) y revienta al
+// cargar bajo el runtime de Vercel (Node 24, require de ESM no soportado).
+async function verifyIdToken(idToken, apiKey) {
+  const r = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ idToken }),
+  })
+  const j = await r.json().catch(() => ({}))
+  const u = j && j.users && j.users[0]
+  if (!r.ok || !u) throw new Error('invalid-token')
+  return { uid: u.localId, name: u.displayName || u.email || 'Usuario', email: u.email || '' }
 }
 
 // Código de invitación legible (sin caracteres ambiguos).
@@ -39,13 +53,13 @@ export default async function handler(req, res) {
   try {
     ensureApp()
     const db = getFirestore()
-    const decoded = await getAuth().verifyIdToken(idToken)
-    const uid = decoded.uid
-    const name = decoded.name || decoded.email || 'Usuario'
-    const email = decoded.email || ''
 
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {})
     const action = body.action
+
+    const apiKey = process.env.VITE_FB_API_KEY || process.env.FB_API_KEY || body.apiKey
+    if (!apiKey) return res.status(500).json({ error: 'missing-api-key' })
+    const { uid, name, email } = await verifyIdToken(idToken, apiKey)
 
     const member = (role) => ({ role, name, email, since: Date.now() })
 

@@ -13,7 +13,7 @@ async function call<T = any>(action: string, payload: Record<string, unknown> = 
   const res = await fetch('/api/collab', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
-    body: JSON.stringify({ action, ...payload }),
+    body: JSON.stringify({ action, apiKey: import.meta.env.VITE_FB_API_KEY, ...payload }),
   })
   const json = await res.json().catch(() => ({}))
   if (!res.ok || json?.error) throw new Error(friendly(json?.error) || 'No se pudo completar la acción')
@@ -29,6 +29,8 @@ function friendly(code?: string): string {
     case 'not-owner': return 'Solo quien creó el espacio puede hacer eso'
     case 'cannot-remove-self': return 'Usa "Salir del espacio" para quitarte a ti mismo'
     case 'no-token': return 'Vuelve a iniciar sesión'
+    case 'invalid-token': return 'Tu sesión expiró. Vuelve a iniciar sesión.'
+    case 'missing-api-key': return 'Falta configuración del servidor (API key)'
     default: return code || ''
   }
 }
@@ -51,11 +53,13 @@ export const apiTestPush = () =>
 export async function copyCurrentDataToSpace(spaceId: string): Promise<void> {
   if (!db) return
   const s = useStore.getState()
+  // Quita campos undefined (Firestore los rechaza) serializando y reparseando.
+  const clean = (v: unknown) => JSON.parse(JSON.stringify(v))
   const ops: { path: string; data: unknown }[] = []
   for (const c of DATA_COLLS) {
-    for (const it of (s[c] as { id: string }[])) ops.push({ path: `spaces/${spaceId}/${c}/${it.id}`, data: it })
+    for (const it of (s[c] as { id: string }[])) ops.push({ path: `spaces/${spaceId}/${c}/${it.id}`, data: clean(it) })
   }
-  ops.push({ path: `spaces/${spaceId}/meta/settings`, data: s.settings })
+  ops.push({ path: `spaces/${spaceId}/meta/settings`, data: clean(s.settings) })
 
   // Firestore limita cada batch a 500 operaciones: dividimos en lotes.
   for (let i = 0; i < ops.length; i += 400) {
